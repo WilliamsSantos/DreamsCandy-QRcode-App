@@ -1,7 +1,12 @@
+<style>
+  .b-color{
+    background-color: black !important;
+  }
+</style>
 <ion-tabs>
 
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="">
+    <ion-tab-button (click)="goHome()">
       <ion-icon name="log-out"></ion-icon>
       <ion-label>Sair</ion-label>
     </ion-tab-button>
@@ -16,10 +21,10 @@
       <ion-label>Scanner</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="tab3">
+    <ion-tab-button (click)="sincronizarDados()">
       <ion-icon name="cloud-upload"></ion-icon>
       <ion-label>Sincronizar</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
-
+  
 </ion-tabs>
