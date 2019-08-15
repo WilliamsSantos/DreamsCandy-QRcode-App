@@ -16,6 +16,13 @@ export class TabsPage {
     public alertController: AlertController
   ) {}
 
+// Criar função de decodificar o QRCODE e no resultado da decodificação
+// Executar uma função que irá verificar se o usuario existe no storage.
+// Se não existir alertar que o usuario não existe.
+// A consulta será realizada com base no cpf do usuario e retornara o nome dele
+// caso o mesmo exista.
+// Se o usuario existir executará um POST alterando o seu dado de 
+
   async sincronizarDados(){
     this.loading = await this.loadingController.create({
       spinner:'dots',
@@ -34,9 +41,14 @@ export class TabsPage {
     window.location.href='/login'
   }
 
+  verificaUsuario(){
+    // this.storage.get('inscritos').then(res => {
 
-  async submeterDados( mensagem ){
-    this.alerta()
+    // });
+  }
+
+  async submeterDados( mensagem: string ){
+    this.alerta(); 
   }
 
   async alerta(){
@@ -51,4 +63,16 @@ export class TabsPage {
     });
   await alert.present();
   }
+
+  decodeQrcode ( qrcode ) {
+    let base64 = qrcode;
+    let arr_dados = [];
+
+    let dadosInscrito = atob(base64);
+    arr_dados = dadosInscrito.split('|');
+
+    //Retorna os dados decodificados
+    return arr_dados;
+  }
+
 }
