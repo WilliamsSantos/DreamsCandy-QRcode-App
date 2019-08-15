@@ -1,5 +1,7 @@
 {
   "name": "DreamsCandyQrcode",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

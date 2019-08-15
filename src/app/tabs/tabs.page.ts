@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tabs',
@@ -9,11 +10,13 @@ import { AlertController } from '@ionic/angular';
 })
 export class TabsPage {
 
-  loading:any;
+  loading:any           = null;
+  dadosInscritos:any    = null;
 
   constructor(
     public loadingController: LoadingController,
-    public alertController: AlertController
+    public alertController: AlertController,
+    private storage: Storage
   ) {}
 
 // Criar função de decodificar o QRCODE e no resultado da decodificação
@@ -36,20 +39,17 @@ export class TabsPage {
     }
   }
 
-  //Função desenvolvida apenas para fins de teste
-  goHome(){
-    window.location.href='/login'
-  }
-
   verificaUsuario(){
-    // this.storage.get('inscritos').then(res => {
-
-    // });
+    this.storage.get('inscritos').then( ( res ) => {
+    });
   }
 
   async submeterDados( mensagem: string ){
     this.alerta(); 
   }
+
+
+
 
   async alerta(){
     const alert = await this.alertController.create({
@@ -74,5 +74,8 @@ export class TabsPage {
     //Retorna os dados decodificados
     return arr_dados;
   }
-
+  //Função desenvolvida apenas para fins de teste
+  goHome(){
+    window.location.href='/login'
+  }
 }
