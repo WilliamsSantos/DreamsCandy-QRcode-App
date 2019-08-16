@@ -14,7 +14,6 @@ export class Tab1Page {
   constructor() {}
 
   busca(){
-
     const searchbar = document.querySelector('ion-searchbar');
     const items = Array.from( document.querySelector('ion-list').children );
     searchbar.addEventListener('ionInput', handleInput);
@@ -25,9 +24,14 @@ export class Tab1Page {
       requestAnimationFrame( () => {
         items.forEach( item => {
           const shouldShow    = item.textContent.toLowerCase().indexOf( query ) > -1;
-          item.style.display  = shouldShow ? 'block' : 'none';
+          item['style'].display  = shouldShow ? 'block' : 'none';
         });
       });
     }
+  }
+
+  salvarConfirmado( c_input:boolean ){
+    console.log(c_input);
+    const checkbox = document.querySelectorAll('ion-checkbox');
   }
 }
