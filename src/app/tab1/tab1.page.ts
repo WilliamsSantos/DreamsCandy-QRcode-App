@@ -32,6 +32,8 @@ export class Tab1Page {
   }
 
   async checkInscrito(){
+    // Storage chamo aqui
+
       const alert = await this.alertController.create({
         header: 'Pedro',
         inputs: [
