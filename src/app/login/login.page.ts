@@ -12,9 +12,9 @@ import { AlertController } from '@ionic/angular';
 
 export class LoginPage implements OnInit {
 
-  private url           = 'https://jsonplaceholder.typicode.com/todos/'; 
-  usuario:any           = null;
-  todos_inscritos       = [];
+  private url               = 'https://jsonplaceholder.typicode.com/todos/'; 
+  protected todos_inscritos = [];
+  protected usuario         = { login:null, senha:null }
 
   constructor(
     private storage: Storage,
@@ -27,9 +27,9 @@ export class LoginPage implements OnInit {
   }
 
   // Esse methodo irá checar no localStorage se o usuario existe
-  async authenticate( username:string, password:any ){
+  async authenticate(){
 
-    const autenticando = await this.loadingController.create({
+    let autenticando = await this.loadingController.create({
       message: 'Conectando...',
       spinner:'dots',
       translucent: true,
@@ -37,17 +37,16 @@ export class LoginPage implements OnInit {
     });
     autenticando.present();
 
-    let user = username;
-    let pass = password;
-
     //Get De Autenticação
-    this.http.get(`${this.url}`) .subscribe(async (result: any) => {
+    this.http.get(`${this.url}`).subscribe(async (result: any) => {
 
-      if ( result ){
+      //    "id": [1..6], "title": "delectus aut autem"
+      //result.find ( item => item.title == this.usuario.login) && result.find( item => item.id == this.usuario.senha )
+      if (result){
 
         autenticando.onDidDismiss();
 
-        const sincronizando = await this.loadingController.create({
+        let sincronizando = await this.loadingController.create({
           message: 'Sincronizando...',
           spinner:'dots',
           translucent: true,
@@ -61,14 +60,28 @@ export class LoginPage implements OnInit {
           if ( result ){
 
             this.todos_inscritos = result;
-
             await this.storage.set('todosInscritos', this.todos_inscritos);
 
             sincronizando.onDidDismiss();
             window.location.href='/tabs/tab1';
 
           } else {
-            
+
+            sincronizando.onDidDismiss();
+            var response = {
+              "status"  : 404,
+              "message" : 'Falha ao sincronizar os dados.',
+              "data"    : {"describe": new Error()}
+            } 
+
+            console.log(response);
+            const alert = await this.alertController.create({
+              header: 'Login',
+              message: response.message,
+              buttons: ['Entendi.']
+            });
+
+            await alert.present();
           }
         });
 
@@ -81,23 +94,27 @@ export class LoginPage implements OnInit {
           "message" : 'Usuario nao encontrado na base de dados',
           "data"    : {"describe": new Error()}
         } 
-        
+
         console.log(response);
+
+        
         const alert = await this.alertController.create({
           header: 'Login',
           message: response.message,
           buttons: ['Entendi.']
         });
-  
+
         await alert.present();
       }
 
     }, async ( Error ) => {
 
+      autenticando.onDidDismiss();
+
       var response = {
-        "status"  : 404,
-        "message" : 'Usuario não Encontrado.',
-        "data"    : {"describe": Error}
+        "status"  : 500,
+        "message" : 'Falha na conexão.',
+        "data"    : {"describe": new Error()}
       } 
 
       console.log(response);
@@ -106,12 +123,11 @@ export class LoginPage implements OnInit {
         message: response.message,
         buttons: ['Entendi.']
       });
-  
+
       await alert.present();
 
     });
 
-    
     // this.storage.get('usuario').then( async ( res ) => {
     //   this.usuario = [res];
     //   let arr_usuario = this.usuario.map( item => item.item );

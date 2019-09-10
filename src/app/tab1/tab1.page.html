@@ -18,46 +18,10 @@
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen>
-  <ion-list>
-    <ion-item>
-      <ion-checkbox color="primary" (click)="checkInscrito('Nome do cidadão')" ></ion-checkbox>
-      <ion-label class="inscrito"> Pedro </ion-label> 
-    </ion-item>
-    <ion-item>
-      <ion-checkbox color="primary" (click)="checkInscrito('Nome do cidadão')" large></ion-checkbox>
-      <ion-label class="inscrito" class="inscrito"> João </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-checkbox color="primary" large></ion-checkbox>
-      <ion-label class="inscrito"> Maria </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-checkbox color="primary" large></ion-checkbox>
-      <ion-label class="inscrito"> Caio </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-checkbox color="primary" large></ion-checkbox>
-      <ion-label class="inscrito"> Cesar </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-checkbox color="primary" large></ion-checkbox>
-      <ion-label class="inscrito">Miguel</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-checkbox color="primary" large></ion-checkbox>
-      <ion-label class="inscrito">Luciana</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-checkbox color="primary" large></ion-checkbox>
-      <ion-label class="inscrito">Ricardo</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-checkbox color="primary" large></ion-checkbox>
-      <ion-label class="inscrito">Barbara</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-checkbox color="primary" large></ion-checkbox>
-      <ion-label class="inscrito">Caio</ion-label>
-    </ion-item>
+  <ion-list *ngFor="let inscrito of inscritos">
+      <ion-item (click)="checkInscrito(inscrito.id)">
+        <ion-checkbox color="primary" large disabled="true"></ion-checkbox>
+        <ion-label class="inscrito" class="inscrito"> {{ inscrito.title }} </ion-label>
+      </ion-item>
   </ion-list>
 </ion-content>

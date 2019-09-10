@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab1',
@@ -11,8 +12,22 @@ export class Tab1Page {
 
   searchbar:any;
   items:any;
+  inscritos:any = [];
 
-  constructor(public alertController: AlertController) {}
+  constructor(
+    public alertController: AlertController,
+    public storage: Storage
+  ) {}
+
+  ngOnInit() {
+    this.listaInscritos();
+  }
+
+  async listaInscritos() {
+    this.storage.get('todosInscritos').then( (result:any) => {
+      this.inscritos = result;
+    });
+  }
 
   busca(){
     const searchbar = document.querySelector('ion-searchbar');
@@ -31,70 +46,91 @@ export class Tab1Page {
     }
   }
 
-  async checkInscrito(){
+  checkInscrito(inscrito_id:any){
     // Storage chamo aqui
 
-      const alert = await this.alertController.create({
-        header: 'Pedro',
-        inputs: [
-          {
-            label: 'CPF:',
-            type: 'text',
-            value: 'CPF : 15225488744',
-            disabled: true
-          },
-          // input date with min & max
-          {
-            name: 'lote',
-            value: 'LOTE : Aqui vai o tipo do lote',
-            disabled: true
-          },
-          {
-            name: 'data-lote-inscricao',
-            type: 'text',
-            value: 'INSCRIÇÃO : 16/08/2019',
-            disabled: true
-          },
-          // input date without min nor max
-          {
-            name: 'periodo',
-            type: 'text',
-            value: 'PERIODO LOTE:',
-            disabled: true
-          },
-          // input date without min nor max
-          {
-            name: 'data-lote-inicio',
-            type: 'text',
-            value: 'INICIO : 16/08/2019',
-            disabled: true
-          },
-          {
-            name: 'data-lote-vencimento',
-            type: 'text',
-            value: 'VENCIMENTO : 16/08/2019',
-            disabled: true
-          }
-        ],
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {
-              console.log('Confirm Cancel');
-              return false
+      const checkbox = document.querySelectorAll('ion-checkbox');
+
+      let id = inscrito_id ;
+      this.storage.get('todosInscritos').then( async ( result:any ) => {
+
+        let inscrito = result.find( item => item.id == id );
+
+        if ( inscrito ){
+
+          const alert = await this.alertController.create({
+            header: inscrito.title,
+            inputs: [
+              {
+                label: 'CPF:',
+                type: 'text',
+                value: `CPF : ${inscrito.id}`,
+                disabled: true
+              },
+              // input date with min & max
+              {
+                name: 'lote',
+                value: 'LOTE : Aqui vai o tipo do lote',
+                disabled: true
+              },
+              {
+                name: 'data-lote-inscricao',
+                type: 'text',
+                value: 'INSCRIÇÃO : 16/08/2019',
+                disabled: true
+              },
+              // input date without min nor max
+              {
+                name: 'periodo',
+                type: 'text',
+                value: 'PERIODO LOTE:',
+                disabled: true
+              },
+              // input date without min nor max
+              {
+                name: 'data-lote-inicio',
+                type: 'text',
+                value: 'INICIO : 16/08/2019',
+                disabled: true
+              },
+              {
+                name: 'data-lote-vencimento',
+                type: 'text',
+                value: 'VENCIMENTO : 16/08/2019',
+                disabled: true
+              }
+            ],
+            buttons: [
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                cssClass: 'secondary',
+                handler: () => {
+                  console.log('Confirm Cancel');
+                  return false
+                }
+              }, {
+                text: 'Confirmar',
+                handler: () => {
+                  console.log('Confirm Ok');
+                  return true
+                }
+              }
+            ]
+          });
+          await alert.present();
+        }else{
+          let response = {
+            "status" : 500,
+            "message": "Inscrito não encontrado",
+            "data" : {
+              "describe" : new Error()
             }
-          }, {
-            text: 'Confirmar',
-            handler: () => {
-              console.log('Confirm Ok');
-              return true
-            }
-          }
-        ]
+          };
+          console.log(response);
+        }
       });
-    await alert.present();
+      
   }
 
   salvarConfirmado( c_input:boolean ){

@@ -29,11 +29,11 @@
           </div>
           <div padding>
             <ion-item>
-              <ion-input class="input-font" name="name" type="text" placeholder="USUARIO" ngModel required></ion-input>
+              <ion-input class="input-font" [(ngModel)]="usuario.login" name="name" type="text" placeholder="USUARIO" ngModel required></ion-input>
             </ion-item>
             <br>
             <ion-item>
-              <ion-input name="password" class="input-font" type="password" placeholder="SENHA" ngModel required></ion-input>
+              <ion-input name="password" [(ngModel)]="usuario.senha" class="input-font" type="password" placeholder="SENHA" ngModel required></ion-input>
             </ion-item>
           </div>
           <div >
