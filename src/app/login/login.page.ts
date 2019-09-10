@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, NavController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
+import { Tab1Page } from '../tab1/tab1.page';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ import { AlertController } from '@ionic/angular';
 
 export class LoginPage implements OnInit {
 
-  private url               = 'https://jsonplaceholder.typicode.com/todos/'; 
+  private url               = 'https://5d77b5ad1e31aa00149a34f3.mockapi.io/inscrito'; 
   protected todos_inscritos = [];
   protected usuario         = { login:null, senha:null}
 
@@ -20,7 +21,8 @@ export class LoginPage implements OnInit {
     private storage: Storage,
     public loadingController: LoadingController,
     private  http: HttpClient,
-    public alertController: AlertController
+    public alertController: AlertController,
+    public navCtrl: NavController
   ) { }
 
   ngOnInit() {
@@ -60,8 +62,8 @@ export class LoginPage implements OnInit {
           if ( result ){
 
             this.todos_inscritos = result;
-            await this.storage.set('todosInscritos', this.todos_inscritos);
 
+            await this.storage.set('todosInscritos', this.todos_inscritos);
             sincronizando.onDidDismiss();
             window.location.href='/tabs/tab1';
 

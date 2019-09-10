@@ -14,35 +14,43 @@ export class Tab1Page {
   _: any = _;
   searchbar:any;
   items:any;
-  inscritos:any               = [];
-  array_inscritos_confirmados = [];
+  public inscritos:any                = [];
+  public array_inscritos_confirmados  = [];
+  checados:any                        = [];
 
   constructor(
     public alertController: AlertController,
     public storage: Storage
   ) {}
 
-  ngOnInit() {
-    this.listaInscritos();
+  async ngOnInit() {
+    await this.listaInscritos();
+  
+    // console.log(this.array_inscritos_confirmados)
+    // this.storage.set('inscritosConfirmados',[]);
   }
 
   listaInscritos() {
     this.storage.get('todosInscritos').then( (result:any) => {
       this.inscritos = result;
+      this.checarEnviados(this.inscritos);
     });
   }
 
   busca(){
     const searchbar = document.querySelector('ion-searchbar');
     const items = Array.from( document.querySelector('ion-list').children );
+
     searchbar.addEventListener('ionInput', handleInput);
 
+    
     function handleInput( event ) {
       const query = event.target.value.toLowerCase();
 
       requestAnimationFrame( () => {
         items.forEach( item => {
-          const shouldShow    = item.textContent.toLowerCase().indexOf( query ) > -1;
+          var shouldShow    = item.textContent.toLowerCase().indexOf( query ) > -1;
+          
           item['style'].display  = shouldShow ? 'block' : 'none';
         });
       });
@@ -55,32 +63,46 @@ export class Tab1Page {
       const checkbox = document.querySelectorAll('ion-checkbox');
       checkbox[i].checked = false;
 
-      let id = inscrito_id ;
+      var id = inscrito_id;
       this.storage.get('todosInscritos').then( async ( result:any ) => {
 
-        let inscrito = result.find( item => item.id == id );
+        let inscrito = result.find( item => item.id_inscricao == id );
 
         if ( inscrito ){
 
+          //Objeto que será enviado para o banco apenas se o inscrito for confirmado
+          let obj_inscrito = {
+            "id_inscrito" : id,
+            "cpf"         : "inscrito.cpf",
+            "lote"        : "inscrito.lote",
+            "checagem"    : false
+          }
+
           const alert = await this.alertController.create({
-            header: inscrito.title,
+            header: inscrito.nom_pessoa,
             inputs: [
+              {
+                label: 'inscricao',
+                type: 'text',
+                value: 'INSCRIÇÃO : '+(inscrito.ind_status == 'P' ? 'Pendente' : inscrito.ind_status == 'C' ? 'Confirmado' : 'Cancelado' ),
+                disabled: true
+              },
               {
                 label: 'CPF:',
                 type: 'text',
-                value: `CPF : ${inscrito.id}`,
+                value: `CPF : ${inscrito.cpf}`,
                 disabled: true
               },
               // input date with min & max
               {
                 name: 'lote',
-                value: 'LOTE : Aqui vai o tipo do lote',
+                value: `LOTE : ${inscrito.nom_setor}`,
                 disabled: true
               },
               {
                 name: 'data-lote-inscricao',
                 type: 'text',
-                value: 'INSCRIÇÃO : 16/08/2019',
+                value: `INSCRIÇÃO : ${inscrito.num_inscricao}`,
                 disabled: true
               },
               // input date without min nor max
@@ -94,13 +116,13 @@ export class Tab1Page {
               {
                 name: 'data-lote-inicio',
                 type: 'text',
-                value: 'INICIO : 16/08/2019',
+                value: `INICIO : ${inscrito.dth_inicio}`,
                 disabled: true
               },
               {
                 name: 'data-lote-vencimento',
                 type: 'text',
-                value: 'VENCIMENTO : 16/08/2019',
+                value: `VENCIMENTO : ${inscrito.dth_fim}`,
                 disabled: true
               }
             ],
@@ -110,21 +132,39 @@ export class Tab1Page {
                 role: 'cancel',
                 cssClass: 'secondary',
                 handler: () => {
-                  console.log('Confirm Cancel');
+                  console.log('Cancel');
+
+                  obj_inscrito.checagem = false;
+
                   return false
                 }
               }, {
                 text: 'Confirmar',
                 handler: () => {
-                  checkbox[i].checked  = true;
-                  checkbox[i].disabled = true;
-                  return true
+                  checkbox[i].checked   = true;
+                  checkbox[i].disabled  = true;
+
+                  obj_inscrito.checagem = true;
+
+                  this.storage.get('todosInscritos').then( ( result ) => {
+
+                    if ( result ){
+                    // Separa o inscrito dos demais
+                      var inscrito_checado = result.filter((inscrito) => {
+                        return inscrito.id_inscricao === id;
+                      });
+
+                      this.storage.get('inscritosConfirmados').then( async ( result ) => {
+                        await this.storage.set('inscritosConfirmados', [...result, inscrito_checado[0]]);
+                        return this.array_inscritos_confirmados = result;
+                      });
+                    }
+                  });
                 }
               }
             ]
           });
           await alert.present();
-
         }else{
           let response = {
             "status" : 500,
@@ -133,14 +173,27 @@ export class Tab1Page {
               "describe" : new Error()
             }
           };
-          console.log(response);
+          console.log(150,response);
         }
       });
-      
   }
 
-  salvarConfirmado( c_input:boolean ){
-    console.log(c_input);
-    const checkbox = document.querySelectorAll('ion-checkbox');
+  checarEnviados(inscritos){
+    this.storage.get('inscritosConfirmados').then( async ( result ) => {
+
+      var reduced = [];
+      inscritos.forEach((item) => {
+
+          var duplicated  = result.findIndex(redItem => {
+              return item.id_inscricao == redItem.id_inscricao;
+          }) > -1;
+          if(!duplicated) {
+              reduced.push(item);
+          }
+      });
+      this.inscritos = reduced;
+
+      // console.log(JSON.stringify(reduced));
+    });
   }
 }

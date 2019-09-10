@@ -19,9 +19,9 @@
 </ion-header>
 <ion-content fullscreen>
   <ion-list *ngFor="let key of _.keys(inscritos)">
-      <ion-item  (click)="checkInscrito(inscritos[key].id, key)">
+      <ion-item  (click)="checkInscrito( inscritos[key].id_inscricao, key )">
         <ion-checkbox color="primary" large ></ion-checkbox>
-        <ion-label class="inscrito" class="inscrito"> {{inscritos[key].title}} </ion-label>
+        <ion-label class="inscrito" class="inscrito"> {{inscritos[key].nom_pessoa}} </ion-label>
       </ion-item>
   </ion-list>
 </ion-content>
