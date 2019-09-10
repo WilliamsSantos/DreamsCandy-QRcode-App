@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-tab1',
@@ -10,9 +11,11 @@ import { Storage } from '@ionic/storage';
 
 export class Tab1Page {
 
+  _: any = _;
   searchbar:any;
   items:any;
-  inscritos:any = [];
+  inscritos:any               = [];
+  array_inscritos_confirmados = [];
 
   constructor(
     public alertController: AlertController,
@@ -23,7 +26,7 @@ export class Tab1Page {
     this.listaInscritos();
   }
 
-  async listaInscritos() {
+  listaInscritos() {
     this.storage.get('todosInscritos').then( (result:any) => {
       this.inscritos = result;
     });
@@ -46,10 +49,11 @@ export class Tab1Page {
     }
   }
 
-  checkInscrito(inscrito_id:any){
-    // Storage chamo aqui
+  checkInscrito(inscrito_id:any, i:any){
 
+    //Encontra e desabilita o check referente ao inscrito selecionado
       const checkbox = document.querySelectorAll('ion-checkbox');
+      checkbox[i].checked = false;
 
       let id = inscrito_id ;
       this.storage.get('todosInscritos').then( async ( result:any ) => {
@@ -112,13 +116,15 @@ export class Tab1Page {
               }, {
                 text: 'Confirmar',
                 handler: () => {
-                  console.log('Confirm Ok');
+                  checkbox[i].checked  = true;
+                  checkbox[i].disabled = true;
                   return true
                 }
               }
             ]
           });
           await alert.present();
+
         }else{
           let response = {
             "status" : 500,

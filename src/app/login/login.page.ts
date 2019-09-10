@@ -14,7 +14,7 @@ export class LoginPage implements OnInit {
 
   private url               = 'https://jsonplaceholder.typicode.com/todos/'; 
   protected todos_inscritos = [];
-  protected usuario         = { login:null, senha:null }
+  protected usuario         = { login:null, senha:null}
 
   constructor(
     private storage: Storage,
@@ -40,8 +40,8 @@ export class LoginPage implements OnInit {
     //Get De Autenticação
     this.http.get(`${this.url}`).subscribe(async (result: any) => {
 
-      //    "id": [1..6], "title": "delectus aut autem"
-      //result.find ( item => item.title == this.usuario.login) && result.find( item => item.id == this.usuario.senha )
+      //  "id": [1..6], "title": "delectus aut autem"
+      //  result.find ( item => item.title == this.usuario.login) && result.find( item => item.id == this.usuario.senha )
       if (result){
 
         autenticando.onDidDismiss();
