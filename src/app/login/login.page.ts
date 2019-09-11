@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { LoadingController, NavController } from '@ionic/angular';
+
 import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
-import { Tab1Page } from '../tab1/tab1.page';
+
+import { AppModule } from '../app.module';
 
 @Component({
   selector: 'app-login',
@@ -13,9 +15,11 @@ import { Tab1Page } from '../tab1/tab1.page';
 
 export class LoginPage implements OnInit {
 
-  private url               = 'https://5d77b5ad1e31aa00149a34f3.mockapi.io/inscrito'; 
+  private sincronizando:any =  AppModule.sincronizando();
+  private url               =  AppModule.url();
   protected todos_inscritos = [];
   protected usuario         = { login:null, senha:null}
+  private autenticando:any;
 
   constructor(
     private storage: Storage,
@@ -25,72 +29,41 @@ export class LoginPage implements OnInit {
     public navCtrl: NavController
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   // Esse methodo irá checar no localStorage se o usuario existe
   async authenticate(){
 
-    let autenticando = await this.loadingController.create({
+    this.autenticando = await this.loadingController.create({
       message: 'Conectando...',
       spinner:'dots',
       translucent: true,
       cssClass: 'b-color'
     });
-    autenticando.present();
+    this.autenticando.present();
 
     //Get De Autenticação
     this.http.get(`${this.url}`).subscribe(async (result: any) => {
 
-      //  "id": [1..6], "title": "delectus aut autem"
-      //  result.find ( item => item.title == this.usuario.login) && result.find( item => item.id == this.usuario.senha )
-      if (result){
+      if ( result ) {
 
-        autenticando.onDidDismiss();
+        this.autenticando.style.display = 'none';
 
-        let sincronizando = await this.loadingController.create({
-          message: 'Sincronizando...',
-          spinner:'dots',
-          translucent: true,
-          cssClass: 'b-color'
+        this.sincronizando = await this.loadingController.create({
+          message     : 'Sincronizando...',
+          spinner     :'dots',
+          translucent : true,
+          cssClass    : 'b-color'
         });
-        sincronizando.present();
+        this.sincronizando.present();
 
-        //Aqui caso o usuario esteja cadastrado ele atualiza o storage dos inscritos
-        this.http.get(`${this.url}`).subscribe( async ( result: any ) => {
-
-          if ( result ){
-
-            this.todos_inscritos = result;
-
-            await this.storage.set('todosInscritos', this.todos_inscritos);
-            sincronizando.onDidDismiss();
-            window.location.href='/tabs/tab1';
-
-          } else {
-
-            sincronizando.onDidDismiss();
-            var response = {
-              "status"  : 404,
-              "message" : 'Falha ao sincronizar os dados.',
-              "data"    : {"describe": new Error()}
-            } 
-
-            console.log(response);
-            const alert = await this.alertController.create({
-              header: 'Login',
-              message: response.message,
-              buttons: ['Entendi.']
-            });
-
-            await alert.present();
-          }
-        });
-
+        console.log('sincro',this.sincronizando);
+        // Chamo a função que dá Get nos inscritos
+          this.getTodosInscritos();
         // window.location.href='/tabs/tab1';
       } else {
 
-        autenticando.onDidDismiss();
+        this.autenticando.style.display = 'none';
         var response = {
           "status"  : 404,
           "message" : 'Usuario nao encontrado na base de dados',
@@ -98,20 +71,12 @@ export class LoginPage implements OnInit {
         } 
 
         console.log(response);
-
-        
-        const alert = await this.alertController.create({
-          header: 'Login',
-          message: response.message,
-          buttons: ['Entendi.']
-        });
-
-        await alert.present();
+        this.alerta( response.message);
       }
 
     }, async ( Error ) => {
 
-      autenticando.onDidDismiss();
+      this.autenticando.style.display = 'none';
 
       var response = {
         "status"  : 500,
@@ -120,35 +85,52 @@ export class LoginPage implements OnInit {
       } 
 
       console.log(response);
-      const alert = await this.alertController.create({
-        header: 'Login',
-        message: response.message,
-        buttons: ['Entendi.']
-      });
-
-      await alert.present();
-
+      this.alerta( response.message);
     });
-
-    // this.storage.get('usuario').then( async ( res ) => {
-    //   this.usuario = [res];
-    //   let arr_usuario = this.usuario.map( item => item.item );
-    //   for ( let i in arr_usuario ) {
-
-    //     if ( arr_usuario[i].username == user && arr_usuario[i].password == pass ) {
-    //       const loading = this.loadingController.create({
-    //         message: 'Por favor Aguarde',
-    //       });
-
-
-    //       if(window.location.href='/tabs/tab1'){
-
-    //       }
-            
-    //     }
-    //     alert('Conta incorreta');
-    //   }
-    // });
   }
 
+  getTodosInscritos(){
+    //Aqui caso o usuario esteja cadastrado ele atualiza o storage dos inscritos
+    this.http.get(`${this.url}`).subscribe( async ( result: any ) => {
+
+      if ( result ) {
+
+        this.todos_inscritos = result;
+
+        await this.storage.set('todosInscritos', this.todos_inscritos);
+
+        console.log(this.sincronizando)
+        // this.sincronizando.style.display = 'none';
+
+        window.location.href='/tabs/tab1';
+        return true;
+
+      } else {
+
+        this.sincronizando.style.display = 'none';
+        var response = {
+          "status"  : 404,
+          "message" : 'Falha ao sincronizar os dados. Por favor Tente novamente!',
+          "data"    : {"describe": new Error()}
+        } 
+
+        console.log(response);
+        this.alerta( response.message);
+        return false;
+      }
+    });
+    return true;
+  }
+
+  // Utils
+  async alerta( mensagem ){
+
+    const alert = await this.alertController.create({
+      header: 'Login',
+      message: mensagem,
+      buttons: ['Entendi.']
+    });
+
+    await alert.present();
+  }
 }

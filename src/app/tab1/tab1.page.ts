@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import * as _ from 'lodash';
+
+import  * as _ from 'lodash';
 
 @Component({
   selector: 'app-tab1',
@@ -11,189 +12,188 @@ import * as _ from 'lodash';
 
 export class Tab1Page {
 
-  _: any = _;
-  searchbar:any;
-  items:any;
-  public inscritos:any                = [];
-  public array_inscritos_confirmados  = [];
-  checados:any                        = [];
+  _:any                                 = _;
+  public items:any                      = null;
+  public searchbar:any                  = null;
+  public inscritos: any                 = [];
+  protected array_inscritos_confirmados = [];
 
   constructor(
     public alertController: AlertController,
     public storage: Storage
-  ) {}
+  ) { }
 
   async ngOnInit() {
     await this.listaInscritos();
   
-    // console.log(this.array_inscritos_confirmados)
-    // this.storage.set('inscritosConfirmados',[]);
+    // Limpa storage 
+    this.storage.set('inscritosConfirmados',[]);
   }
 
-  listaInscritos() {
-    this.storage.get('todosInscritos').then( (result:any) => {
+  public listaInscritos() {
+    this.storage.get('todosInscritos').then( ( result: any ) => {
       this.inscritos = result;
-      this.checarEnviados(this.inscritos);
+      this.checarEnviados( this.inscritos );
     });
+    return true;
   }
 
-  busca(){
+  busca() {
+
+    const items     = Array.from( document.querySelector('ion-list').children );
     const searchbar = document.querySelector('ion-searchbar');
-    const items = Array.from( document.querySelector('ion-list').children );
 
     searchbar.addEventListener('ionInput', handleInput);
 
-    
-    function handleInput( event ) {
+    function handleInput(event) {
+
       const query = event.target.value.toLowerCase();
 
-      requestAnimationFrame( () => {
+      requestAnimationFrame(() => {
         items.forEach( item => {
-          var shouldShow    = item.textContent.toLowerCase().indexOf( query ) > -1;
+          var shouldShow = item.textContent.toLowerCase().indexOf(query) > -1;
           
-          item['style'].display  = shouldShow ? 'block' : 'none';
+          item['style'].display = shouldShow ? 'block' : 'none';
+        
         });
       });
     }
   }
 
-  checkInscrito(inscrito_id:any, i:any){
+  checkInscrito( inscrito_id: any, i: any ) {
 
     //Encontra e desabilita o check referente ao inscrito selecionado
-      const checkbox = document.querySelectorAll('ion-checkbox');
-      checkbox[i].checked = false;
+    const checkbox      = document.querySelectorAll('ion-checkbox');
+    checkbox[i].checked = false;
 
-      var id = inscrito_id;
-      this.storage.get('todosInscritos').then( async ( result:any ) => {
+    var id  = inscrito_id;
+    this.storage.get('todosInscritos').then( async ( result: any ) => {
 
-        let inscrito = result.find( item => item.id_inscricao == id );
+      let inscrito = result.find( item => item.id_inscricao == id );
+      
+      if ( inscrito ) {
 
-        if ( inscrito ){
-
-          //Objeto que será enviado para o banco apenas se o inscrito for confirmado
-          let obj_inscrito = {
-            "id_inscrito" : id,
-            "cpf"         : "inscrito.cpf",
-            "lote"        : "inscrito.lote",
-            "checagem"    : false
-          }
-
-          const alert = await this.alertController.create({
-            header: inscrito.nom_pessoa,
-            inputs: [
-              {
-                label: 'inscricao',
-                type: 'text',
-                value: 'INSCRIÇÃO : '+(inscrito.ind_status == 'P' ? 'Pendente' : inscrito.ind_status == 'C' ? 'Confirmado' : 'Cancelado' ),
-                disabled: true
-              },
-              {
-                label: 'CPF:',
-                type: 'text',
-                value: `CPF : ${inscrito.cpf}`,
-                disabled: true
-              },
-              // input date with min & max
-              {
-                name: 'lote',
-                value: `LOTE : ${inscrito.nom_setor}`,
-                disabled: true
-              },
-              {
-                name: 'data-lote-inscricao',
-                type: 'text',
-                value: `INSCRIÇÃO : ${inscrito.num_inscricao}`,
-                disabled: true
-              },
-              // input date without min nor max
-              {
-                name: 'periodo',
-                type: 'text',
-                value: 'PERIODO LOTE:',
-                disabled: true
-              },
-              // input date without min nor max
-              {
-                name: 'data-lote-inicio',
-                type: 'text',
-                value: `INICIO : ${inscrito.dth_inicio}`,
-                disabled: true
-              },
-              {
-                name: 'data-lote-vencimento',
-                type: 'text',
-                value: `VENCIMENTO : ${inscrito.dth_fim}`,
-                disabled: true
-              }
-            ],
-            buttons: [
-              {
-                text: 'Cancel',
-                role: 'cancel',
-                cssClass: 'secondary',
-                handler: () => {
-                  console.log('Cancel');
-
-                  obj_inscrito.checagem = false;
-
-                  return false
-                }
-              }, {
-                text: 'Confirmar',
-                handler: () => {
-                  checkbox[i].checked   = true;
-                  checkbox[i].disabled  = true;
-
-                  obj_inscrito.checagem = true;
-
-                  this.storage.get('todosInscritos').then( ( result ) => {
-
-                    if ( result ){
-                    // Separa o inscrito dos demais
-                      var inscrito_checado = result.filter((inscrito) => {
-                        return inscrito.id_inscricao === id;
-                      });
-
-                      this.storage.get('inscritosConfirmados').then( async ( result ) => {
-                        await this.storage.set('inscritosConfirmados', [...result, inscrito_checado[0]]);
-                        return this.array_inscritos_confirmados = result;
-                      });
-                    }
-                  });
-                }
-              }
-            ]
-          });
-          await alert.present();
-        }else{
-          let response = {
-            "status" : 500,
-            "message": "Inscrito não encontrado",
-            "data" : {
-              "describe" : new Error()
+        const alert = await this.alertController.create({
+          header: inscrito.nom_pessoa,
+          inputs: [
+            {
+              label: 'inscricao',
+              type: 'text',
+              value: 'INSCRIÇÃO : ' + (inscrito.ind_status == 'P' ? 'Pendente' : inscrito.ind_status == 'C' ? 'Confirmado' : 'Cancelado'),
+              disabled: true
+            },
+            {
+              label: 'CPF:',
+              type: 'text',
+              value: `CPF : ${inscrito.cpf}`,
+              disabled: true
+            },
+            // input date with min & max
+            {
+              name: 'lote',
+              value: `LOTE : ${inscrito.nom_setor}`,
+              disabled: true
+            },
+            {
+              name: 'data-lote-inscricao',
+              type: 'text',
+              value: `INSCRIÇÃO : ${inscrito.num_inscricao}`,
+              disabled: true
+            },
+            // input date without min nor max
+            {
+              name: 'periodo',
+              type: 'text',
+              value: 'PERIODO LOTE:',
+              disabled: true
+            },
+            // input date without min nor max
+            {
+              name: 'data-lote-inicio',
+              type: 'text',
+              value: `INICIO : ${inscrito.dth_inicio}`,
+              disabled: true
+            },
+            {
+              name: 'data-lote-vencimento',
+              type: 'text',
+              value: `VENCIMENTO : ${inscrito.dth_fim}`,
+              disabled: true
             }
-          };
-          console.log(150,response);
-        }
-      });
+          ],
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: () => {
+                console.log('Cancel');
+                return false;
+              }
+            }, {
+              text: 'Confirmar',
+              handler: () => {
+
+                checkbox[i].checked = true;
+                checkbox[i].disabled = true;
+
+                this.storage.get('todosInscritos').then( ( result:any ) => {
+                  
+                  if ( result ) {
+                    // Separa o inscrito dos demais
+                    
+                    var inscrito_checado = result.filter( ( inscrito ) => {
+                      return inscrito.id_inscricao === id;
+                    });
+
+                    this.storage.get('inscritosConfirmados').then( async ( result ) => {
+
+                      if ( result == null ) return await this.storage.set('inscritosConfirmados', [ inscrito_checado[0] ]);
+
+                      await this.storage.set('inscritosConfirmados', [ ...result, inscrito_checado[0] ]);
+                      return this.array_inscritos_confirmados = result;
+                    });
+                  }
+                });
+              }
+            }
+          ]
+        });
+        await alert.present();
+
+      } else {
+
+        let response = {
+          "status": 500,
+          "message": "Inscrito não encontrado",
+          "data": {
+            "describe": new Error()
+          }
+        };
+
+        console.log(response);
+      }
+    });
   }
 
-  checarEnviados(inscritos){
+  checarEnviados( inscritos ) {
     this.storage.get('inscritosConfirmados').then( async ( result ) => {
 
-      var reduced = [];
-      inscritos.forEach((item) => {
+      var array_inscritos = [];
+      inscritos.forEach( ( item ) => {
 
-          var duplicated  = result.findIndex(redItem => {
-              return item.id_inscricao == redItem.id_inscricao;
-          }) > -1;
-          if(!duplicated) {
-              reduced.push(item);
-          }
+      // Esse metodo filtra os duplicados
+      // Deixando somente os que ainda não estão 
+        var duplicated = result.findIndex( redItem => {
+          return item.id_inscricao == redItem.id_inscricao;
+        }) > -1;
+
+        if ( !duplicated ) {
+          array_inscritos.push( item );
+        }
       });
-      this.inscritos = reduced;
 
-      // console.log(JSON.stringify(reduced));
+      this.inscritos = array_inscritos;
     });
   }
 }

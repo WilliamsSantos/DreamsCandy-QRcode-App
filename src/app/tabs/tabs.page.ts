@@ -2,24 +2,36 @@ import { Component } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+
+import { HttpClient } from '@angular/common/http';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+
+import { AppModule } from '../app.module';
+
+import { Tab1Page } from '../tab1/tab1.page';
+import { LoginPage } from '../login/login.page';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss']
 })
+
 export class TabsPage {
 
-  loading:any           = null;
-  dadosInscritos:any    = null;
-  scanner_data:any      = null;
+  public loading:any            = null;
+  protected dadosInscritos:any  = null;
+  protected scanner_data:any    = null;
+  public todos_inscritos: any   = null;
 
   constructor(
     public loadingController: LoadingController,
     public alertController: AlertController,
     private storage: Storage,
     private barcodeScanner: BarcodeScanner,
+    public http: HttpClient,
+    public _tab1: Tab1Page,
+    public _loginPage : LoginPage
   ) {}
 
 // Criar função de decodificar o QRCODE e no resultado da decodificação
@@ -35,11 +47,14 @@ export class TabsPage {
       message: 'Sincronizando',
       translucent: true,
       cssClass: 'b-color'
-    }); await this.loading.present();
+    }); 
+    await this.loading.present();
 
-    if ( this.submeterDados('Guardando') ){
-      this.loading.style.display = 'none';
-    }
+    if ( await this._loginPage.getTodosInscritos() ) {
+      if ( this.submeterDados('Guardando') ){
+        this.loading.style.display = 'none';
+      }
+    }; 
   }
 
   verificaUsuario(){
@@ -48,7 +63,7 @@ export class TabsPage {
   }
 
   async submeterDados( mensagem: string ){
-    this.alerta(); 
+    this._tab1.ngOnInit()
   }
 
   async qrcodeScanner () {
@@ -96,9 +111,5 @@ export class TabsPage {
 
     //Retorna os dados decodificados
     return arr_dados;
-  }
-  //Função desenvolvida apenas para fins de teste
-  goHome(){
-    window.location.href='/login'
   }
 }
