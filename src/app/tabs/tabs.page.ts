@@ -3,13 +3,13 @@ import { LoadingController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-
-import { AppModule } from '../app.module';
 
 import { Tab1Page } from '../tab1/tab1.page';
 import { LoginPage } from '../login/login.page';
+
+import { AppModule } from '../app.module';
 
 @Component({
   selector: 'app-tabs',
@@ -23,6 +23,7 @@ export class TabsPage {
   protected dadosInscritos:any  = null;
   protected scanner_data:any    = null;
   public todos_inscritos: any   = null;
+  private url                   = AppModule.postInscritos();
 
   constructor(
     public loadingController: LoadingController,
@@ -50,11 +51,11 @@ export class TabsPage {
     }); 
     await this.loading.present();
 
-    if ( await this._loginPage.getTodosInscritos() ) {
-      if ( this.submeterDados('Guardando') ){
-        this.loading.style.display = 'none';
-      }
-    }; 
+this.submeterDados('Guardando')
+    // if ( await this._loginPage.getTodosInscritos() && this.submeterDados('Guardando') ) {
+    //   this.loading.style.display = 'none';
+    //   // this._tab1.ngOnInit();
+    // }; 
   }
 
   verificaUsuario(){
@@ -63,7 +64,32 @@ export class TabsPage {
   }
 
   async submeterDados( mensagem: string ){
-    this._tab1.ngOnInit()
+
+    //  Pegar os inscritos confirmados, e da um submite
+    this.storage.get('inscritosConfirmados').then( ( inscritosConfirmados ) => {
+
+      inscritosConfirmados.forEach(inscrito => {
+
+        let postData = {
+          'idInscricao' : inscrito.id_inscricao
+        }
+
+        const requestOptions = {
+          headers: new HttpHeaders({ 
+            'Access-Control-Allow-Origin':'*',
+            // 'Authorization':'authkey',
+            // 'userid':'1',
+            'Content-Type': 'application/json',
+          })
+        };
+
+        this.http.post(`${this.url}`, postData, requestOptions).subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+      });
+    });    
   }
 
   async qrcodeScanner () {
@@ -111,5 +137,8 @@ export class TabsPage {
 
     //Retorna os dados decodificados
     return arr_dados;
+  }
+  goHome(){
+    location.href = '/login'; 
   }
 }

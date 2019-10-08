@@ -16,7 +16,7 @@ import { AppModule } from '../app.module';
 export class LoginPage implements OnInit {
 
   private sincronizando:any =  AppModule.sincronizando();
-  private url               =  AppModule.url();
+  private url               =  AppModule.getInscritos();
   protected todos_inscritos = [];
   protected usuario         = { login:null, senha:null}
   private autenticando:any;
@@ -45,6 +45,7 @@ export class LoginPage implements OnInit {
     //Get De Autenticação
     this.http.get(`${this.url}`).subscribe(async (result: any) => {
 
+    console.log(result.data);
       if ( result ) {
 
         this.autenticando.style.display = 'none';
@@ -58,9 +59,10 @@ export class LoginPage implements OnInit {
         this.sincronizando.present();
 
         console.log('sincro',this.sincronizando);
+
         // Chamo a função que dá Get nos inscritos
+          // if ( this.getTodosInscritos() ) window.location.href='/tabs/tab1';
           this.getTodosInscritos();
-        // window.location.href='/tabs/tab1';
       } else {
 
         this.autenticando.style.display = 'none';
@@ -98,10 +100,7 @@ export class LoginPage implements OnInit {
         this.todos_inscritos = result;
 
         await this.storage.set('todosInscritos', this.todos_inscritos);
-
-        console.log(this.sincronizando)
         // this.sincronizando.style.display = 'none';
-
         window.location.href='/tabs/tab1';
         return true;
 

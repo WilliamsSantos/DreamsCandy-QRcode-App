@@ -41,12 +41,34 @@ import { LoginPage } from '../app/login/login.page';
 export class AppModule {
 
   //Variavel global para ser reaproveitada em toda a aplicação
-  private static _url: string   = 'https://5d77b5ad1e31aa00149a34f3.mockapi.io/inscrito';
+  private static _url_mongoTeste: string            = 'https://5d77b5ad1e31aa00149a34f3.mockapi.io/inscrito';
+
+  private static _get_url_desenvolvimento: string   = 'http://localhost:8000/api/getDadosInscritos';
+  private static _post_url_desenvolvimento: string  = 'http://localhost:8000/api/setInscritosConfirmados';
+
+  private static _url_producao: string              = 'http://api.ofm.com.br/DreamsCandy/public/api/';
   private static _sincronizando: any;
 
-  static url():string{
-    return this._url;
+  // static url():string{
+  //   return this._url;
+  // }
+
+  static  urlMongoTeste():String {
+    return this._url_mongoTeste;
   }
+
+  static getInscritos():String {
+    return this._get_url_desenvolvimento;
+  }
+
+  static postInscritos():String {
+    return this._post_url_desenvolvimento;
+  }
+
+  static urlProducao():String {
+    return this._url_producao;
+  }
+
   static sincronizando(): any {
     return this._sincronizando;
   }

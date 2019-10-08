@@ -27,12 +27,12 @@ export class Tab1Page {
     await this.listaInscritos();
   
     // Limpa storage 
-    this.storage.set('inscritosConfirmados',[]);
+    // this.storage.set('inscritosConfirmados',[]);
   }
 
   public listaInscritos() {
     this.storage.get('todosInscritos').then( ( result: any ) => {
-      this.inscritos = result;
+      this.inscritos = result.data;
       this.checarEnviados( this.inscritos );
     });
     return true;
@@ -40,24 +40,28 @@ export class Tab1Page {
 
   busca() {
 
-    const items     = Array.from( document.querySelector('ion-list').children );
-    const searchbar = document.querySelector('ion-searchbar');
+    let searchbar       = document.querySelector('ion-searchbar').value;
+    let searchInscritos = this.inscritos.filter(item => item.nom_pessoa.toLowerCase().indexOf(searchbar.toLowerCase()) > -1 )
 
-    searchbar.addEventListener('ionInput', handleInput);
+    if ( searchInscritos.length > 0 ){
+      this.inscritos = searchInscritos;
+      let alertaNaoEncontrado = document.querySelectorAll('.badgeNaoEncontrado');
 
-    function handleInput(event) {
-
-      const query = event.target.value.toLowerCase();
-
-      requestAnimationFrame(() => {
-        items.forEach( item => {
-          var shouldShow = item.textContent.toLowerCase().indexOf(query) > -1;
-          
-          item['style'].display = shouldShow ? 'block' : 'none';
-        
-        });
+      alertaNaoEncontrado.forEach((item) => {
+        item.style.display = 'none';
       });
+
+    } else {
+      let campo_mensagem = document.createElement('ion-card');   // Create a <button> element
+
+      campo_mensagem.setAttribute("class", "badgeNaoEncontrado");
+      campo_mensagem.style      = 'height: 238px; background-color: azure; font-size: 20pt; text-align: center; padding: 79px 0px; margin: 50%auto;';
+      campo_mensagem.innerHTML  = "Ops! Inscrito não encontrado. Sincronize e tente novamente!";                       // Insert text
+      
+      document.body.appendChild(campo_mensagem);
     }
+    
+    if (searchbar === '') this.listaInscritos();
   }
 
   checkInscrito( inscrito_id: any, i: any ) {
@@ -69,8 +73,8 @@ export class Tab1Page {
     var id  = inscrito_id;
     this.storage.get('todosInscritos').then( async ( result: any ) => {
 
-      let inscrito = result.find( item => item.id_inscricao == id );
-      
+      let inscrito = result.data.find( item => item.id_inscricao == id );
+
       if ( inscrito ) {
 
         const alert = await this.alertController.create({
@@ -97,7 +101,7 @@ export class Tab1Page {
             {
               name: 'data-lote-inscricao',
               type: 'text',
-              value: `INSCRIÇÃO : ${inscrito.num_inscricao}`,
+              value: `INSCRIÇÃO : ${inscrito.id_inscricao}`,
               disabled: true
             },
             // input date without min nor max
@@ -142,7 +146,7 @@ export class Tab1Page {
                   if ( result ) {
                     // Separa o inscrito dos demais
                     
-                    var inscrito_checado = result.filter( ( inscrito ) => {
+                    var inscrito_checado = result.data.filter( ( inscrito ) => {
                       return inscrito.id_inscricao === id;
                     });
 
@@ -181,7 +185,6 @@ export class Tab1Page {
 
       var array_inscritos = [];
       inscritos.forEach( ( item ) => {
-
       // Esse metodo filtra os duplicados
       // Deixando somente os que ainda não estão 
         var duplicated = result.findIndex( redItem => {
@@ -193,7 +196,7 @@ export class Tab1Page {
         }
       });
 
-      this.inscritos = array_inscritos;
+      return this.inscritos = array_inscritos;
     });
   }
 }

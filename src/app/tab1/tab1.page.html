@@ -1,6 +1,7 @@
 <style>
   .inscrito {
     font-size: x-large;
+    margin: 0px 20%;
   }
   .alert-input-wrapper, .sc-ion-alert-ios > .alert-input, .sc-ion-alert-ios {
     background-color: #bdb76b00 !important;
@@ -14,14 +15,16 @@
     <ion-title> PESQUISAR </ion-title>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-searchbar (change)="busca()" placeholder="Encontrar..."></ion-searchbar>
+    <ion-searchbar (keyup)="busca()" placeholder="Encontrar..."></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen>
   <ion-list *ngFor="let key of _.keys(inscritos)">
       <ion-item  (click)="checkInscrito( inscritos[key].id_inscricao, key )">
         <ion-checkbox color="primary" large ></ion-checkbox>
-        <ion-label class="inscrito" class="inscrito"> {{inscritos[key].nom_pessoa}} </ion-label>
+        <ion-label class="inscrito" class="inscrito">
+          {{inscritos[key].nom_pessoa}} 
+        </ion-label>
       </ion-item>
   </ion-list>
 </ion-content>
