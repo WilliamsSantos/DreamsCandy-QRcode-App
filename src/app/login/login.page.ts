@@ -22,7 +22,6 @@ export class LoginPage implements OnInit {
   private url_login         = AppModule.postLogin();
 
   protected todos_inscritos = [];
-  // protected loginForm       = { login:null, senha:null }
   private autenticando:any;
 
   constructor(
@@ -47,125 +46,75 @@ export class LoginPage implements OnInit {
     this.autenticando.present();
 
     const loginData = {
-      'login': form.value.login, 
+      'login'   : form.value.login, 
       'password': form.value.password
-    }    
+    }
+
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
       })
     }
 
-    // this.http.post('/api/login', JSON.stringify(loginData), httpOptions).subscribe(
-    //   res => {
-    //     console.log(res);
-    //   },
-    //   err => {
-    //     console.log(err);
-    //   }
-    // );
+    this.http.post(`${this.url_login}`, JSON.stringify(loginData), httpOptions ).subscribe(
+      async (auth) => {
 
-    // this.http.post(`${this.url_login}`, JSON.stringify(loginData), requestOptions).subscribe(async (result:any) => {
-    //   if ( result.data ) {
+        console.log(auth)
+        if ( auth.cod == 200 && auth.status == 'sucess' ){
 
-    //     this.autenticando.style.display = 'none';
-    //     this.sincronizando = await this.loadingController.create({
-    //       message     : 'Sincronizando...',
-    //       spinner     :'dots',
-    //       translucent : true,
-    //       cssClass    : 'b-color'
-    //     });
-    //     this.sincronizando.present();
+          this.autenticando.style.display = 'none';
+          this.sincronizando = await this.loadingController.create({
+            message     : 'Sincronizando...',
+            spinner     :'dots',
+            translucent : true,
+            cssClass    : 'b-color'
+          });
+          this.sincronizando.present();
 
-    //     console.log('sincro', this.sincronizando);
+            // Cria sessao usuario
+            if (await this.storage.set('acess_token', auth.data.usuarioToken)){
+              console.log('sincro', this.sincronizando);
 
-    //     // Chamo a função que dá Get nos inscritos
-    //       // if ( this.getTodosInscritos() ) window.location.href='/tabs/tab1';
-    //       this.getTodosInscritos();
-    //   } else {
+              // Chamo a função que dá Get nos inscritos
+                if ( this.getTodosInscritos() ) window.location.href='/tabs/tab1';
+                // this.getTodosInscritos();
+            };
+          } else {
+          console.log(auth);
+          this.autenticando.style.display = 'none';
+          var response = {
+            "status"  : 404,
+            "message" : 'Usuario nao encontrado na base de dados',
+            "data"    : {"describe": new Error()}
+          } 
 
-    //     this.autenticando.style.display = 'none';
-    //     var response = {
-    //       "status"  : 404,
-    //       "message" : 'Usuario nao encontrado na base de dados',
-    //       "data"    : {"describe": new Error()}
-    //     } 
-
-    //     console.log(response);
-    //     this.alerta( response.message);
-    //   }
-    // }, async ( Error ) => {
-
-    //   this.autenticando.style.display = 'none';
-
-    //   var response = {
-    //     "status"  : 500,
-    //     "message" : 'Falha na conexão.',
-    //     "data"    : {"describe": new Error()}
-    //   } 
-
-    //   console.log(response);
-    //   this.alerta( response.message);
-    // });
-
-    // Get De Autenticação
-    // this.http.get(`${this.url}`).subscribe(async (result: any) => {
-
-    //   if ( result.data ) {
-
-      //     this.autenticando.style.display = 'none';
-      //     this.sincronizando = await this.loadingController.create({
-      //       message     : 'Sincronizando...',
-      //       spinner     :'dots',
-      //       translucent : true,
-      //       cssClass    : 'b-color'
-      //     });
-      //     this.sincronizando.present();
-
-      //     console.log('sincro', this.sincronizando);
-
-      //     // Chamo a função que dá Get nos inscritos
-      //       // if ( this.getTodosInscritos() ) window.location.href='/tabs/tab1';
-      //       this.getTodosInscritos();
-      //   } else {
-
-      //     this.autenticando.style.display = 'none';
-      //     var response = {
-      //       "status"  : 404,
-      //       "message" : 'Usuario nao encontrado na base de dados',
-      //       "data"    : {"describe": new Error()}
-      //     } 
-
-      //     console.log(response);
-      //     this.alerta( response.message);
-      //   }
-
-      // }, async ( Error ) => {
-
-      //   this.autenticando.style.display = 'none';
-
-      //   var response = {
-      //     "status"  : 500,
-      //     "message" : 'Falha na conexão.',
-      //     "data"    : {"describe": new Error()}
-      //   } 
-
-      //   console.log(response);
-      //   this.alerta( response.message);
-      // });
+          console.log(response);
+          this.alerta( response.message);
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
   getTodosInscritos(){
+    // inscritosConfirmados
     //Aqui caso o usuario esteja cadastrado ele atualiza o storage dos inscritos
     this.http.get(`${this.url}`).subscribe( async ( result: any ) => {
 
+      console.log(result);
       if ( result ) {
 
-        this.todos_inscritos = result;
+        this.todos_inscritos = result.data;
 
+        this.storage.set('todosInscritos', []);
         await this.storage.set('todosInscritos', this.todos_inscritos);
         // this.sincronizando.style.display = 'none';
-        window.location.href='/tabs/tab1';
+        // window.location.href='/tabs/tab1';
         return true;
 
       } else {

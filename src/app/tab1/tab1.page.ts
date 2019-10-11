@@ -24,15 +24,15 @@ export class Tab1Page {
   ) { }
 
   async ngOnInit() {
-    await this.listaInscritos();
 
+    await this.listaInscritos();
     // Limpa storage 
     // this.storage.set('inscritosConfirmados',[]);
   }
 
   public listaInscritos() {
     this.storage.get('todosInscritos').then( ( result: any ) => {
-      this.inscritos = result.data;
+      this.inscritos = result;
       this.checarEnviados( this.inscritos );
     });
     return true;
@@ -55,7 +55,7 @@ export class Tab1Page {
       var campo_mensagem = document.createElement('ion-card');   // Create a <button> element
 
       campo_mensagem.setAttribute("class", "badgeNaoEncontrado");
-      campo_mensagem.style      = 'height: 238px; background-color: azure; font-size: 20pt; text-align: center; padding: 79px 0px; margin: 50%auto;';
+      campo_mensagem.style      = 'height: 238px; background-color: azure; font-size: 20pt; text-align: center; padding: 79px 0px; margin: 56%auto;';
       campo_mensagem.innerHTML  = "Ops! Inscrito não encontrado. Sincronize e tente novamente!";                       // Insert text
 
       document.body.appendChild(campo_mensagem);
@@ -73,17 +73,17 @@ export class Tab1Page {
     var id  = inscrito_id;
     this.storage.get('todosInscritos').then( async ( result: any ) => {
 
-      let inscrito = result.data.find( item => item.id_inscricao == id );
+      let inscrito = result.find( item => item.id_inscricao == id );
 
       if ( inscrito ) {
 
         const alert = await this.alertController.create({
-          header: inscrito.nom_pessoa,
+          message: '<h1 style="text-align:center">'+inscrito.nom_pessoa+'</h1>',
           inputs: [
             {
-              label: 'inscricao',
+              label: 'INSCRIÇÃO:',
               type: 'text',
-              value: 'INSCRIÇÃO : ' + (inscrito.ind_status == 'P' ? 'Pendente' : inscrito.ind_status == 'C' ? 'Confirmado' : 'Cancelado'),
+              value: 'Inscrição: '+(inscrito.ind_status == 'P' ? 'Pendente' : inscrito.ind_status == 'C' ? 'Confirmado' : 'Cancelado'),
               disabled: true
             },
             {
@@ -142,18 +142,22 @@ export class Tab1Page {
                 checkbox[i].disabled = true;
 
                 this.storage.get('todosInscritos').then( ( result:any ) => {
-                  
+
                   if ( result ) {
                     // Separa o inscrito dos demais
-                    
-                    var inscrito_checado = result.data.filter( ( inscrito ) => {
+
+                    var inscrito_checado = result.filter( ( inscrito ) => {
+                      console.log(inscrito.id_inscricao);
                       return inscrito.id_inscricao === id;
                     });
 
                     this.storage.get('inscritosConfirmados').then( async ( result ) => {
 
+                      console.log('tab1 nscritosConfirmados');
+
                       if ( result == null ) return await this.storage.set('inscritosConfirmados', [ inscrito_checado[0] ]);
 
+                      console.log('tab 1 this.storage.set(inscritosConfirmados)');
                       await this.storage.set('inscritosConfirmados', [ ...result, inscrito_checado[0] ]);
                       return this.array_inscritos_confirmados = result;
                     });
@@ -183,6 +187,7 @@ export class Tab1Page {
   checarEnviados( inscritos ) {
     this.storage.get('inscritosConfirmados').then( async ( result ) => {
 
+      console.log(inscritos)
       var array_inscritos = [];
       inscritos.forEach( ( item ) => {
       // Esse metodo filtra os duplicados

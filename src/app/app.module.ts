@@ -52,6 +52,7 @@ export class AppModule {
 
   private static _sincronizando: any;
 
+  private static storage:any = Storage;
   /* 
   *   @Url Teste Mongo
   */
@@ -77,16 +78,19 @@ export class AppModule {
       return this._get_url_producao;
     }
 
-  static postInscritosProducao():String {
-    return this._post_url_producao;
-  }
+    static postInscritosProducao():String {
+      return this._post_url_producao;
+    }
 
-  static postLogin():String {
-    return this._post_url_login;
-  }
+    static postLogin():String {
+      return this._post_url_login;
+    }
 
-  static sincronizando(): any {
-    return this._sincronizando;
-  }
+    static sincronizando(): any {
+      return this._sincronizando;
+    }
+
+  // Checagem do Token
+
   // static url():string{return this._url;}
 }
