@@ -40,36 +40,53 @@ import { LoginPage } from '../app/login/login.page';
 
 export class AppModule {
 
-  //Variavel global para ser reaproveitada em toda a aplicação
+  // Variavel global para ser reaproveitada em toda a aplicação
   private static _url_mongoTeste: string            = 'https://5d77b5ad1e31aa00149a34f3.mockapi.io/inscrito';
 
-  private static _get_url_desenvolvimento: string   = 'http://localhost:8000/api/getDadosInscritos';
-  private static _post_url_desenvolvimento: string  = 'http://localhost:8000/api/setInscritosConfirmados';
+  private static _get_url_desenvolvimento: string   = 'http://10.1.1.138:8000/api/getDadosInscritos';
+  private static _post_url_desenvolvimento: string  = 'http://10.1.1.138:8000/api/setInscritosConfirmados';
+  private static _post_url_login: string            = 'http://10.1.1.138:8000/api/login';
 
-  private static _url_producao: string              = 'http://api.ofm.com.br/DreamsCandy/public/api/';
+  private static _get_url_producao: string          = 'http://api.ofm.com.br/DreamsCandy/public/api/getDadosInscritos';
+  private static _post_url_producao: string         = 'http://api.ofm.com.br/DreamsCandy/public/api/setInscritosConfirmados';
+
   private static _sincronizando: any;
 
-  // static url():string{
-  //   return this._url;
-  // }
+  /* 
+  *   @Url Teste Mongo
+  */
+    static  urlMongoTeste():String {
+      return this._url_mongoTeste;
+    }
 
-  static  urlMongoTeste():String {
-    return this._url_mongoTeste;
+  /*
+  *   @Url Desenvolvimento
+  */
+    static getInscritos():String {
+      return this._get_url_desenvolvimento;
+    }
+
+    static postInscritos():String {
+      return this._post_url_desenvolvimento;
+    }
+
+  /*  
+  *   @Url Produção
+  */
+    static getInscritosProducao():String {
+      return this._get_url_producao;
+    }
+
+  static postInscritosProducao():String {
+    return this._post_url_producao;
   }
 
-  static getInscritos():String {
-    return this._get_url_desenvolvimento;
-  }
-
-  static postInscritos():String {
-    return this._post_url_desenvolvimento;
-  }
-
-  static urlProducao():String {
-    return this._url_producao;
+  static postLogin():String {
+    return this._post_url_login;
   }
 
   static sincronizando(): any {
     return this._sincronizando;
   }
+  // static url():string{return this._url;}
 }

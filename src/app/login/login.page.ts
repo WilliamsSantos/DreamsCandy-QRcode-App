@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { LoadingController, NavController } from '@ionic/angular';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 
 import { AppModule } from '../app.module';
+
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -15,24 +17,26 @@ import { AppModule } from '../app.module';
 
 export class LoginPage implements OnInit {
 
-  private sincronizando:any =  AppModule.sincronizando();
-  private url               =  AppModule.getInscritos();
+  private sincronizando:any = AppModule.sincronizando();
+  private url               = AppModule.getInscritos();
+  private url_login         = AppModule.postLogin();
+
   protected todos_inscritos = [];
-  protected usuario         = { login:null, senha:null}
+  // protected loginForm       = { login:null, senha:null }
   private autenticando:any;
 
   constructor(
     private storage: Storage,
-    public loadingController: LoadingController,
-    private  http: HttpClient,
-    public alertController: AlertController,
-    public navCtrl: NavController
+    public  loadingController: LoadingController,
+    private http: HttpClient,
+    public  alertController: AlertController,
+    public  navCtrl: NavController,
   ) { }
 
   ngOnInit() {}
 
   // Esse methodo irá checar no localStorage se o usuario existe
-  async authenticate(){
+  async authenticate(form: NgForm){
 
     this.autenticando = await this.loadingController.create({
       message: 'Conectando...',
@@ -42,53 +46,113 @@ export class LoginPage implements OnInit {
     });
     this.autenticando.present();
 
-    //Get De Autenticação
-    this.http.get(`${this.url}`).subscribe(async (result: any) => {
+    const loginData = {
+      'login': form.value.login, 
+      'password': form.value.password
+    }    
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+      })
+    }
 
-    console.log(result.data);
-      if ( result ) {
+    // this.http.post('/api/login', JSON.stringify(loginData), httpOptions).subscribe(
+    //   res => {
+    //     console.log(res);
+    //   },
+    //   err => {
+    //     console.log(err);
+    //   }
+    // );
 
-        this.autenticando.style.display = 'none';
+    // this.http.post(`${this.url_login}`, JSON.stringify(loginData), requestOptions).subscribe(async (result:any) => {
+    //   if ( result.data ) {
 
-        this.sincronizando = await this.loadingController.create({
-          message     : 'Sincronizando...',
-          spinner     :'dots',
-          translucent : true,
-          cssClass    : 'b-color'
-        });
-        this.sincronizando.present();
+    //     this.autenticando.style.display = 'none';
+    //     this.sincronizando = await this.loadingController.create({
+    //       message     : 'Sincronizando...',
+    //       spinner     :'dots',
+    //       translucent : true,
+    //       cssClass    : 'b-color'
+    //     });
+    //     this.sincronizando.present();
 
-        console.log('sincro',this.sincronizando);
+    //     console.log('sincro', this.sincronizando);
 
-        // Chamo a função que dá Get nos inscritos
-          // if ( this.getTodosInscritos() ) window.location.href='/tabs/tab1';
-          this.getTodosInscritos();
-      } else {
+    //     // Chamo a função que dá Get nos inscritos
+    //       // if ( this.getTodosInscritos() ) window.location.href='/tabs/tab1';
+    //       this.getTodosInscritos();
+    //   } else {
 
-        this.autenticando.style.display = 'none';
-        var response = {
-          "status"  : 404,
-          "message" : 'Usuario nao encontrado na base de dados',
-          "data"    : {"describe": new Error()}
-        } 
+    //     this.autenticando.style.display = 'none';
+    //     var response = {
+    //       "status"  : 404,
+    //       "message" : 'Usuario nao encontrado na base de dados',
+    //       "data"    : {"describe": new Error()}
+    //     } 
 
-        console.log(response);
-        this.alerta( response.message);
-      }
+    //     console.log(response);
+    //     this.alerta( response.message);
+    //   }
+    // }, async ( Error ) => {
 
-    }, async ( Error ) => {
+    //   this.autenticando.style.display = 'none';
 
-      this.autenticando.style.display = 'none';
+    //   var response = {
+    //     "status"  : 500,
+    //     "message" : 'Falha na conexão.',
+    //     "data"    : {"describe": new Error()}
+    //   } 
 
-      var response = {
-        "status"  : 500,
-        "message" : 'Falha na conexão.',
-        "data"    : {"describe": new Error()}
-      } 
+    //   console.log(response);
+    //   this.alerta( response.message);
+    // });
 
-      console.log(response);
-      this.alerta( response.message);
-    });
+    // Get De Autenticação
+    // this.http.get(`${this.url}`).subscribe(async (result: any) => {
+
+    //   if ( result.data ) {
+
+      //     this.autenticando.style.display = 'none';
+      //     this.sincronizando = await this.loadingController.create({
+      //       message     : 'Sincronizando...',
+      //       spinner     :'dots',
+      //       translucent : true,
+      //       cssClass    : 'b-color'
+      //     });
+      //     this.sincronizando.present();
+
+      //     console.log('sincro', this.sincronizando);
+
+      //     // Chamo a função que dá Get nos inscritos
+      //       // if ( this.getTodosInscritos() ) window.location.href='/tabs/tab1';
+      //       this.getTodosInscritos();
+      //   } else {
+
+      //     this.autenticando.style.display = 'none';
+      //     var response = {
+      //       "status"  : 404,
+      //       "message" : 'Usuario nao encontrado na base de dados',
+      //       "data"    : {"describe": new Error()}
+      //     } 
+
+      //     console.log(response);
+      //     this.alerta( response.message);
+      //   }
+
+      // }, async ( Error ) => {
+
+      //   this.autenticando.style.display = 'none';
+
+      //   var response = {
+      //     "status"  : 500,
+      //     "message" : 'Falha na conexão.',
+      //     "data"    : {"describe": new Error()}
+      //   } 
+
+      //   console.log(response);
+      //   this.alerta( response.message);
+      // });
   }
 
   getTodosInscritos(){

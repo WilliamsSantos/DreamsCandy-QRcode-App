@@ -3,5 +3,9 @@
   "integrations": {
     "cordova": {}
   },
+  "proxies": [{
+    "path": "/api/login",
+    "proxyUrl": "http://10.1.1.138:8000/api/login"
+  }],
   "type": "angular"
 }

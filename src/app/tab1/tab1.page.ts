@@ -25,7 +25,7 @@ export class Tab1Page {
 
   async ngOnInit() {
     await this.listaInscritos();
-  
+
     // Limpa storage 
     // this.storage.set('inscritosConfirmados',[]);
   }
@@ -38,7 +38,7 @@ export class Tab1Page {
     return true;
   }
 
-  busca() {
+  public busca() {
 
     let searchbar       = document.querySelector('ion-searchbar').value;
     let searchInscritos = this.inscritos.filter(item => item.nom_pessoa.toLowerCase().indexOf(searchbar.toLowerCase()) > -1 )
@@ -52,15 +52,15 @@ export class Tab1Page {
       });
 
     } else {
-      let campo_mensagem = document.createElement('ion-card');   // Create a <button> element
+      var campo_mensagem = document.createElement('ion-card');   // Create a <button> element
 
       campo_mensagem.setAttribute("class", "badgeNaoEncontrado");
       campo_mensagem.style      = 'height: 238px; background-color: azure; font-size: 20pt; text-align: center; padding: 79px 0px; margin: 50%auto;';
       campo_mensagem.innerHTML  = "Ops! Inscrito não encontrado. Sincronize e tente novamente!";                       // Insert text
-      
+
       document.body.appendChild(campo_mensagem);
     }
-    
+
     if (searchbar === '') this.listaInscritos();
   }
 
@@ -174,7 +174,7 @@ export class Tab1Page {
             "describe": new Error()
           }
         };
-
+        alert(JSON.stringify(response));
         console.log(response);
       }
     });

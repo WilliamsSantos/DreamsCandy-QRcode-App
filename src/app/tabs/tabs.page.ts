@@ -3,7 +3,7 @@ import { LoadingController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 import { Tab1Page } from '../tab1/tab1.page';
@@ -51,7 +51,7 @@ export class TabsPage {
     }); 
     await this.loading.present();
 
-this.submeterDados('Guardando')
+    this.submeterDados('Guardando')
     // if ( await this._loginPage.getTodosInscritos() && this.submeterDados('Guardando') ) {
     //   this.loading.style.display = 'none';
     //   // this._tab1.ngOnInit();
@@ -68,27 +68,27 @@ this.submeterDados('Guardando')
     //  Pegar os inscritos confirmados, e da um submite
     this.storage.get('inscritosConfirmados').then( ( inscritosConfirmados ) => {
 
-      inscritosConfirmados.forEach(inscrito => {
+      // inscritosConfirmados.forEach(inscrito => {
 
-        let postData = {
-          'idInscricao' : inscrito.id_inscricao
-        }
+      //   let postData = {
+      //     'idInscricao' : inscrito.id_inscricao
+      //   }
 
-        const requestOptions = {
-          headers: new HttpHeaders({ 
-            'Access-Control-Allow-Origin':'*',
-            // 'Authorization':'authkey',
-            // 'userid':'1',
-            'Content-Type': 'application/json',
-          })
-        };
+      //   const requestOptions = {
+      //     headers: new HttpHeaders({ 
+      //       'Access-Control-Allow-Origin':'*',
+      //       // 'Authorization':'authkey',
+      //       // 'userid':'1',
+      //       'Content-Type': 'application/json',
+      //     })
+      //   };
 
-        this.http.post(`${this.url}`, postData, requestOptions).subscribe(data => {
-          console.log(data['_body']);
-        }, error => {
-          console.log(error);
-        });
-      });
+      //   this.http.post(`${this.url}`, postData, requestOptions).subscribe(data => {
+      //     console.log(data['_body']);
+      //   }, error => {
+      //     console.log(error);
+      //   });
+      // });
     });    
   }
 
@@ -98,7 +98,7 @@ this.submeterDados('Guardando')
         showFlipCameraButton : true, // iOS and Android
         showTorchButton : true, // iOS and Android
         torchOn: true, // Android, launch with the torch switched on (if available)
-        prompt : "Place a barcode inside the scan area", // Android
+        prompt : "Posicione o código de barras dentro da área do Scanner", // Android
         resultDisplayDuration: 500, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
         formats : "QR_CODE,PDF_417", // default: all but PDF_417 and RSS_EXPANDED
         disableAnimations : true, // iOS
@@ -108,7 +108,7 @@ this.submeterDados('Guardando')
       let base64 = barcodeData;
       let dadosInscrito = atob(base64.text);
       this.scanner_data = dadosInscrito.split('|');
-      
+
       alert('dados: '+JSON.stringify( this.scanner_data ));
     }).catch( ( err ) => {
       console.log('Error', err);

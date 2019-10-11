@@ -19,9 +19,9 @@
 </style>
 
 <ion-content id="form-content" justify-content-center>
-  <img widht="80%"src="assets/logo-dreams-candy.jpeg" style="margin: 0px auto 0px auto">
+  <img src="assets/logo-dreams-candy.jpeg" style="margin: -4% auto -17px 4%; width:100%">
   <!-- <img src="https://lh3.googleusercontent.com/-jkVFmOELCqU/XVR2Utf5aMI/AAAAAAAAAGY/1L8FKAMNif48d5ugd1ldulX5IXZkRCrGgCK8BGAs/s0/2019-08-14.jpg" alt="" srcset=""> -->
-  <form  id="login-form" #form="ngForm" (ngSubmit)="authenticate()">
+  <form  id="login-form" #form="ngForm" (ngSubmit)="authenticate(form)" method="post">
     <ion-grid>
       <ion-row color="primary" justify-content-center>
         <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
@@ -30,11 +30,11 @@
           </div>
           <div padding>
             <ion-item>
-              <ion-input class="input-font" [(ngModel)]="usuario.login" name="name" type="text" placeholder="USUARIO" ngModel required></ion-input>
+              <ion-input class="input-font" [(ngModel)]="login" name="login" type="text" placeholder="USUARIO" ngModel required></ion-input>
             </ion-item>
             <br>
             <ion-item>
-              <ion-input name="password" [(ngModel)]="usuario.senha" class="input-font" type="password" placeholder="SENHA" ngModel required></ion-input>
+              <ion-input class="input-font" [(ngModel)]="password" name="password" type="password" placeholder="SENHA" ngModel required></ion-input>
             </ion-item>
           </div>
           <div >
