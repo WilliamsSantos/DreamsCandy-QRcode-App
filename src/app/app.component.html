@@ -1,4 +1,27 @@
+<style>
+.fade-in {
+	opacity: 1;
+	animation-name: fadeInOpacity;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: .5s;
+	margin: 25% 6%;
+	width: 100%;
+}
+
+@keyframes fadeInOpacity {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+</style>
 
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+	<ion-router-outlet>
+		<img src="assets/logo-dreams-candy.jpeg" class="fade-in">.
+		<ion-progress-bar type="indeterminate" style="height: 20px;background-color:coral"></ion-progress-bar>
+	</ion-router-outlet>
 </ion-app>
