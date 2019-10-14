@@ -21,7 +21,7 @@ export class LoginPage implements OnInit {
   private url               = AppModule.getInscritos();
   private url_login         = AppModule.postLogin();
 
-  protected todos_inscritos = [];
+  protected todos_inscritos:any;
   private autenticando:any;
 
   constructor(
@@ -32,7 +32,9 @@ export class LoginPage implements OnInit {
     public  navCtrl: NavController,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.storage.get('acess_token'))
+  }
 
   // Esse methodo irá checar no localStorage se o usuario existe
   async authenticate(form: NgForm){
@@ -62,9 +64,8 @@ export class LoginPage implements OnInit {
     this.http.post(`${this.url_login}`, JSON.stringify(loginData), httpOptions ).subscribe(
       async (auth) => {
 
-        console.log(auth)
-        if ( auth.cod == 200 && auth.status == 'sucess' ){
-
+        if ( auth['cod'] == 200 && auth['status'] == 'sucess' ){
+          // console.log(auth)
           this.autenticando.style.display = 'none';
           this.sincronizando = await this.loadingController.create({
             message     : 'Sincronizando...',
@@ -75,15 +76,14 @@ export class LoginPage implements OnInit {
           this.sincronizando.present();
 
             // Cria sessao usuario
-            if (await this.storage.set('acess_token', auth.data.usuarioToken)){
-              console.log('sincro', this.sincronizando);
-
+            if ( await this.storage.set('acess_token', auth['data']['usuarioToken']) ){
+              this.getTodosInscritos();
               // Chamo a função que dá Get nos inscritos
-                if ( this.getTodosInscritos() ) window.location.href='/tabs/tab1';
+                // if ( await this.getTodosInscritos()) window.location.href='/tabs/tab1';
                 // this.getTodosInscritos();
             };
           } else {
-          console.log(auth);
+          // console.log(auth);
           this.autenticando.style.display = 'none';
           var response = {
             "status"  : 404,
@@ -91,7 +91,7 @@ export class LoginPage implements OnInit {
             "data"    : {"describe": new Error()}
           } 
 
-          console.log(response);
+          // console.log(response);
           this.alerta( response.message);
         }
       },
@@ -102,21 +102,19 @@ export class LoginPage implements OnInit {
   }
 
   getTodosInscritos(){
-    // inscritosConfirmados
     //Aqui caso o usuario esteja cadastrado ele atualiza o storage dos inscritos
     this.http.get(`${this.url}`).subscribe( async ( result: any ) => {
 
-      console.log(result);
+      
       if ( result ) {
 
-        this.todos_inscritos = result.data;
-
+        this.todos_inscritos = result['data'];
         this.storage.set('todosInscritos', []);
         await this.storage.set('todosInscritos', this.todos_inscritos);
-        // this.sincronizando.style.display = 'none';
-        // window.location.href='/tabs/tab1';
-        return true;
 
+        window.location.href='/tabs/tab1';
+
+        return true;
       } else {
 
         this.sincronizando.style.display = 'none';
@@ -126,7 +124,6 @@ export class LoginPage implements OnInit {
           "data"    : {"describe": new Error()}
         } 
 
-        console.log(response);
         this.alerta( response.message);
         return false;
       }

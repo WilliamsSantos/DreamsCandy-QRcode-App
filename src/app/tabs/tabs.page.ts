@@ -35,17 +35,17 @@ export class TabsPage implements OnInit {
     public _loginPage : LoginPage
   ) {}
 
-  ngOnInit(): void {
-    this.storage.get('acess_token').then(res=>{
-      if ( res == '' ){
-        this.goHome()
-      }
-    })
+  async ngOnInit(){
+    if (await this.storage.get('acess_token') == ""){
+      this.goHome()
+    };
   }
 
   goHome(){
     this.storage.set('acess_token', '');
-    this.storage.set('todosInscritos', []);
+    this.storage.get('todosInscritos').then(res=>{
+      this.storage.set('todosInscritos', res = [])
+    });
     location.href = '/login'; 
   }
 
@@ -58,14 +58,8 @@ export class TabsPage implements OnInit {
     }); 
     await this.loading.present();
 
-    if ( await this._loginPage.getTodosInscritos()) {
-
-      if ( this.submeterDados('Guardando') ) {
-
-        this.loading.style.display = 'none';
-        this._tab1.ngOnInit();
-      }
-    }; 
+    await this.submeterDados('Guardando');
+      
   }
 
   verificaUsuario(){
@@ -85,25 +79,21 @@ export class TabsPage implements OnInit {
     }
 
     this.storage.get('inscritosConfirmados').then(todosConfirmados => {
-      todosConfirmados.forEach( inscritoConfirmado => {
+      for ( let i = 0; i <= todosConfirmados.length; i++) {
 
         let inscrito = {
-          'idInscricao': inscritoConfirmado['id_inscricao']
+          'idInscricao': todosConfirmados[i]['id_inscricao']
         } 
-        console.log(inscrito)
+
         this.http.post(`${this.url_insert_inscritos}`, JSON.stringify(inscrito), httpOptions ).subscribe(async (res) => {
-
-          console.log('todosConfirmados')
-
-          if ( res.cod == 200 && res.status == 'sucess'){
-            console.log('Enviado.')
-          } else {
-            this.alerta('Ops! Não conseguimos enviar os dados por favor tente novamente!');
+          // console.log('dentro ',i)
+          if ( res['cod'] == 200 && res['status'] == 'sucess'){
+            let novoArrayInscritos = todosConfirmados.splice(todosConfirmados[i], 0);
+            await this.storage.set('inscritosConfirmados', novoArrayInscritos);
           }
-        },err => {
-          console.log(err);
-        }); 
-      });
+        });
+      }
+      console.log(this.storage.get('inscritosConfirmados'));
     });
     this.alerta('Seus Dados Já Estão Atualizados.');
   }
@@ -142,15 +132,17 @@ export class TabsPage implements OnInit {
     return arr_dados;
   }
 
-  
   async alerta(message){
-
+    this.loading.style.display = 'none'
     const alert = await this.alertController.create({
       header: 'Tudo Sincronizado!',
       message: message,
       buttons: [
         {
           text: 'Entendi',
+          handler: async () => {
+            await this._loginPage.getTodosInscritos();
+          }
         }
       ],
     });

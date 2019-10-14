@@ -32,6 +32,7 @@ export class Tab1Page {
 
   public listaInscritos() {
     this.storage.get('todosInscritos').then( ( result: any ) => {
+      // console.log('RESULT '+result)
       this.inscritos = result;
       this.checarEnviados( this.inscritos );
     });
@@ -48,15 +49,14 @@ export class Tab1Page {
       let alertaNaoEncontrado = document.querySelectorAll('.badgeNaoEncontrado');
 
       alertaNaoEncontrado.forEach((item) => {
-        item.style.display = 'none';
+        item['style'].display = 'none';
       });
 
     } else {
-      var campo_mensagem = document.createElement('ion-card');   // Create a <button> element
+      const campo_mensagem = document.createElement('ion-card');   // Create a <button> element
 
-      campo_mensagem.setAttribute("class", "badgeNaoEncontrado");
-      campo_mensagem.style      = 'height: 238px; background-color: azure; font-size: 20pt; text-align: center; padding: 79px 0px; margin: 56%auto;';
-      campo_mensagem.innerHTML  = "Ops! Inscrito não encontrado. Sincronize e tente novamente!";                       // Insert text
+      campo_mensagem.classList.add("badgeNaoEncontrado");
+      campo_mensagem.innerHTML = 'Ops! Inscrito não encontrado. Sincronize e tente novamente!';
 
       document.body.appendChild(campo_mensagem);
     }
@@ -73,17 +73,18 @@ export class Tab1Page {
     var id  = inscrito_id;
     this.storage.get('todosInscritos').then( async ( result: any ) => {
 
+      console.log(result);
       let inscrito = result.find( item => item.id_inscricao == id );
 
       if ( inscrito ) {
 
         const alert = await this.alertController.create({
-          message: '<h1 style="text-align:center">'+inscrito.nom_pessoa+'</h1>',
+          message: '<h1 style="text-align:center;margin-bottom:-10px">'+inscrito.nom_pessoa+'</h1>',
           inputs: [
             {
               label: 'INSCRIÇÃO:',
               type: 'text',
-              value: 'Inscrição: '+(inscrito.ind_status == 'P' ? 'Pendente' : inscrito.ind_status == 'C' ? 'Confirmado' : 'Cancelado'),
+              value: 'INSCRIÇÃO: '+(inscrito.ind_status == 'P' ? 'Pendente' : inscrito.ind_status == 'C' ? 'Confirmado' : 'Cancelado'),
               disabled: true
             },
             {
@@ -138,8 +139,8 @@ export class Tab1Page {
               text: 'Confirmar',
               handler: () => {
 
-                checkbox[i].checked = true;
-                checkbox[i].disabled = true;
+                checkbox[i].checked   = true;
+                checkbox[i].disabled  = true;
 
                 this.storage.get('todosInscritos').then( ( result:any ) => {
 
@@ -153,11 +154,10 @@ export class Tab1Page {
 
                     this.storage.get('inscritosConfirmados').then( async ( result ) => {
 
-                      console.log('tab1 nscritosConfirmados');
+                      // console.log('tab1 nscritosConfirmados');
 
                       if ( result == null ) return await this.storage.set('inscritosConfirmados', [ inscrito_checado[0] ]);
 
-                      console.log('tab 1 this.storage.set(inscritosConfirmados)');
                       await this.storage.set('inscritosConfirmados', [ ...result, inscrito_checado[0] ]);
                       return this.array_inscritos_confirmados = result;
                     });
@@ -179,7 +179,7 @@ export class Tab1Page {
           }
         };
         alert(JSON.stringify(response));
-        console.log(response);
+        // console.log(response);
       }
     });
   }
@@ -187,9 +187,9 @@ export class Tab1Page {
   checarEnviados( inscritos ) {
     this.storage.get('inscritosConfirmados').then( async ( result ) => {
 
-      console.log(inscritos)
+      // console.log(inscritos)
       var array_inscritos = [];
-      inscritos.forEach( ( item ) => {
+      [inscritos].forEach( ( item ) => {
       // Esse metodo filtra os duplicados
       // Deixando somente os que ainda não estão 
         var duplicated = result.findIndex( redItem => {
@@ -201,7 +201,8 @@ export class Tab1Page {
         }
       });
 
-      return this.inscritos = array_inscritos;
+      console.log(array_inscritos);
+      // return this.inscritos = array_inscritos;
     });
   }
 }

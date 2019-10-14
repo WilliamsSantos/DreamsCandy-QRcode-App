@@ -52,7 +52,6 @@ export class AppModule {
 
   private static _sincronizando: any;
 
-  private static storage:any = Storage;
   /* 
   *   @Url Teste Mongo
   */
