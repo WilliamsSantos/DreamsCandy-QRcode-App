@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { InscritoModel } from "../models/inscrito-model";
 
 import  * as _ from 'lodash';
 
@@ -18,6 +19,12 @@ export class Tab1Page {
   public inscritos: any                 = [];
   protected array_inscritos_confirmados = [];
 
+  private page                          = 1;
+  private perPage                       = 0;
+  private totalData                     = 0;
+  private totalPage                     = 0;
+  inscrito: InscritoModel[]             = [];
+
   constructor(
     public alertController: AlertController,
     public storage: Storage
@@ -34,9 +41,39 @@ export class Tab1Page {
     this.storage.get('todosInscritos').then( ( result: any ) => {
       // console.log('RESULT '+result)
       this.inscritos = result;
-      this.checarEnviados( this.inscritos );
+
+      for (let i = 0; i <= 50; i++) {
+        let inscto = new InscritoModel(
+          this.inscritos[i].nome,
+        );
+        this.inscrito.push(inscto);
+      }
+
+      this.perPage    = 10;
+      this.totalData  = this.inscritos.length;
+      this.totalPage  = 10;
+      // this.checarEnviados( this.inscritos );
     });
     return true;
+  }
+
+  doInfinite(infinityScrolling) {
+    this.totalPage = this.page * 10;
+    
+    setTimeout(() => {
+
+      let result = this.inscritos.slice(this.page * 10);
+
+      for (let i = 0; i <= this.perPage; i++) {
+        if (result[i] != undefined) {
+          let inscto = new InscritoModel(result[i].nome);
+          this.inscrito.push(inscto);
+        }
+      }
+
+      this.page += 1;
+      infinityScrolling.target.complete()
+    }, 2000);
   }
 
   public busca() {
@@ -73,7 +110,7 @@ export class Tab1Page {
     var id  = inscrito_id;
     this.storage.get('todosInscritos').then( async ( result: any ) => {
 
-      console.log(result);
+      // console.log(result);
       let inscrito = result.find( item => item.id_inscricao == id );
 
       if ( inscrito ) {
@@ -184,25 +221,25 @@ export class Tab1Page {
     });
   }
 
-  checarEnviados( inscritos ) {
-    this.storage.get('inscritosConfirmados').then( async ( result ) => {
+  // checarEnviados( inscritos ) {
+  //   this.storage.get('inscritosConfirmados').then( async ( result ) => {
 
-      // console.log(inscritos)
-      var array_inscritos = [];
-      [inscritos].forEach( ( item ) => {
-      // Esse metodo filtra os duplicados
-      // Deixando somente os que ainda não estão 
-        var duplicated = result.findIndex( redItem => {
-          return item.id_inscricao == redItem.id_inscricao;
-        }) > -1;
+  //     // console.log(inscritos)
+  //     var array_inscritos = [];
+  //     [inscritos].forEach( ( item ) => {
+  //     // Esse metodo filtra os duplicados
+  //     // Deixando somente os que ainda não estão 
+  //       var duplicated = result.findIndex( redItem => {
+  //         return item.id_inscricao == redItem.id_inscricao;
+  //       }) > -1;
 
-        if ( !duplicated ) {
-          array_inscritos.push( item );
-        }
-      });
+  //       if ( !duplicated ) {
+  //         array_inscritos.push( item );
+  //       }
+  //     });
 
-      console.log(array_inscritos);
-      // return this.inscritos = array_inscritos;
-    });
-  }
+  //     // console.log(array_inscritos);
+  //     return this.inscritos = array_inscritos;
+  //   });
+  // }
 }

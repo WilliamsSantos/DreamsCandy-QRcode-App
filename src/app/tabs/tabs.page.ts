@@ -93,7 +93,7 @@ export class TabsPage implements OnInit {
           }
         });
       }
-      console.log(this.storage.get('inscritosConfirmados'));
+      // console.log(this.storage.get('inscritosConfirmados'));
     });
     this.alerta('Seus Dados Já Estão Atualizados.');
   }

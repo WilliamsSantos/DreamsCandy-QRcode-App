@@ -20,34 +20,40 @@
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen>
-    <div *ngIf="!inscritos.length > 0">
-        <div class="ion-padding custom-skeleton">
-          <ion-list>
-            <ion-item *ngFor="let item of [1,2,3,4,5,6,7,8,9,10]">
-              <ion-avatar slot="start">
-                <ion-skeleton-text animated></ion-skeleton-text>
-              </ion-avatar>
-              <ion-label>
-                  <br>
-                <p>
-                  <ion-skeleton-text animated style="width: 80%; height: 25px;"></ion-skeleton-text>
-                </p>
-                <p>
-                  <br>
-                </p>
-              </ion-label>
-            </ion-item>
-          </ion-list>
-        </div>
+
+  <div *ngIf="!inscritos.length > 0">
+    <div class="ion-padding custom-skeleton">
+      <ion-list>
+        <ion-item *ngFor="let item of [1,2,3,4,5,6,7,8]">
+          <ion-avatar slot="start">
+            <ion-skeleton-text animated></ion-skeleton-text>
+          </ion-avatar>
+          <ion-label>
+              <br>
+            <p>
+              <ion-skeleton-text animated style="width: 80%; height: 25px;"></ion-skeleton-text>
+            </p>
+            <p>
+              <br>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
     </div>
-    <ion-list *ngFor="let key of _.keys(inscritos)">
-      <div *ngIf="inscritos">
-          <ion-item  (click)="checkInscrito( inscritos[key].id_inscricao, key )">
-            <ion-checkbox color="primary" large ></ion-checkbox>
-            <ion-label class="inscrito" >
-              {{inscritos[key].nom_pessoa}} 
-            </ion-label>
-          </ion-item>
-      </div>  
+  </div>
+
+  <ion-list *ngFor="let key of _.keys(inscrito)">
+    <div *ngIf="inscritos">
+      <ion-item  (click)="checkInscrito( inscritos[key].id_inscricao, key )">
+        <ion-checkbox color="primary" large ></ion-checkbox>
+        <ion-label class="inscrito" style="font-size: 19pt">
+          {{inscritos[key].nom_pessoa}} 
+        </ion-label>
+      </ion-item>
+    </div>  
   </ion-list>
+
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)" *ngIf="totalPage < totalData">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Carregando mais inscritos..."></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 </ion-content>
