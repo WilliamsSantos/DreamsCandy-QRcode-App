@@ -20,12 +20,34 @@
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen>
-  <ion-list *ngFor="let key of _.keys(inscritos)">
-      <ion-item  (click)="checkInscrito( inscritos[key].id_inscricao, key )">
-        <ion-checkbox color="primary" large ></ion-checkbox>
-        <ion-label class="inscrito" class="inscrito">
-          {{inscritos[key].nom_pessoa}} 
-        </ion-label>
-      </ion-item>
+    <div *ngIf="!inscritos.length > 0">
+        <div class="ion-padding custom-skeleton">
+          <ion-list>
+            <ion-item *ngFor="let item of [1,2,3,4,5,6,7,8,9,10]">
+              <ion-avatar slot="start">
+                <ion-skeleton-text animated></ion-skeleton-text>
+              </ion-avatar>
+              <ion-label>
+                  <br>
+                <p>
+                  <ion-skeleton-text animated style="width: 80%; height: 25px;"></ion-skeleton-text>
+                </p>
+                <p>
+                  <br>
+                </p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+    </div>
+    <ion-list *ngFor="let key of _.keys(inscritos)">
+      <div *ngIf="inscritos">
+          <ion-item  (click)="checkInscrito( inscritos[key].id_inscricao, key )">
+            <ion-checkbox color="primary" large ></ion-checkbox>
+            <ion-label class="inscrito" >
+              {{inscritos[key].nom_pessoa}} 
+            </ion-label>
+          </ion-item>
+      </div>  
   </ion-list>
 </ion-content>
