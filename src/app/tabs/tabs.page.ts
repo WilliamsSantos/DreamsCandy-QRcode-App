@@ -59,7 +59,6 @@ export class TabsPage implements OnInit {
     await this.loading.present();
 
     await this.submeterDados('Guardando');
-      
   }
 
   verificaUsuario(){
@@ -73,7 +72,7 @@ export class TabsPage implements OnInit {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type'
       })
     }
@@ -95,7 +94,7 @@ export class TabsPage implements OnInit {
       }
       // console.log(this.storage.get('inscritosConfirmados'));
     });
-    this.alerta('Seus Dados Já Estão Atualizados.');
+    this.alerta('Seus Dados Já Estão Atualizados.', true);
   }
 
   async qrcodeScanner () {
@@ -103,19 +102,67 @@ export class TabsPage implements OnInit {
       {
         showFlipCameraButton : true, // iOS and Android
         showTorchButton : true, // iOS and Android
-        torchOn: true, // Android, launch with the torch switched on (if available)
-        prompt : "Posicione o código de barras dentro da área do Scanner", // Android
+        torchOn: false, // Android, launch with the torch switched on (if available)
+        prompt : "Posicione o código dentro da área do Scanner", // Android
         resultDisplayDuration: 500, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
         formats : "QR_CODE,PDF_417", // default: all but PDF_417 and RSS_EXPANDED
         disableAnimations : true, // iOS
         disableSuccessBeep: false // iOS and Android
       }
     ).then( barcodeData => {
-      let base64 = barcodeData;
+
+      let base64        = barcodeData;
       let dadosInscrito = atob(base64.text);
       this.scanner_data = dadosInscrito.split('|');
+      let dadosScanner  = {
+        'cpf'             : JSON.stringify( this.scanner_data[0] ),
+        'idInscricao'     : JSON.stringify( this.scanner_data[1] ),
+        'data_inscricao'  : JSON.stringify( this.scanner_data[2] )
+      };
 
-      alert('dados: '+JSON.stringify( this.scanner_data ));
+      this.storage.get('todosInscritos').then( async inscritos => {
+        this.loading = await this.loadingController.create({
+          spinner: null,
+          message: 'Please wait...',
+          translucent: true,
+          cssClass: 'custom-class custom-loading'
+        });
+        await this.loading.present();
+        
+        let inscritoConfirmado = await inscritos.find( inscrito => inscrito.id_inscricao == dadosScanner.idInscricao);
+
+        if ( inscritoConfirmado == null){
+          this.alerta('Inscrito não Encontrado na lista.', false);
+          return false;
+        }
+
+        for (let i = 0; i < inscritos.length; i++) {
+
+          const inscrito    = inscritos[i];
+          const httpOptions = {
+            headers: new HttpHeaders({
+              'Content-Type'                  : 'application/json',
+              'Access-Control-Allow-Origin'   : '*',
+              'Access-Control-Allow-Methods'  : 'POST, OPTIONS',
+              'Access-Control-Allow-Headers'  : 'Content-Type'
+            })
+          }
+
+          try {
+            this.http.post(`${this.url_insert_inscritos}`, JSON.stringify(inscritoConfirmado.id_inscricao), httpOptions ).subscribe(async (res) => {
+              if ( res['cod'] == 200 && res['status'] == 'sucess'){
+                let novoArrayInscritos = inscritos.split(inscrito[i], 0)
+                await this.storage.set('inscritosConfirmados', novoArrayInscritos);
+              }
+            });
+          } catch (e) {
+            alert(e)
+          }
+        }
+      });
+
+      this.alerta('Inscrito Confirmado.', true);
+      // alert('dados: ');
     }).catch( ( err ) => {
       console.log('Error', err);
     });
@@ -132,21 +179,26 @@ export class TabsPage implements OnInit {
     return arr_dados;
   }
 
-  async alerta(message){
-    this.loading.style.display = 'none'
-    const alert = await this.alertController.create({
-      header: 'Tudo Sincronizado!',
-      message: message,
-      buttons: [
-        {
-          text: 'Entendi',
-          handler: async () => {
-            await this._loginPage.getTodosInscritos();
-          }
-        }
-      ],
-    });
-  await alert.present();
-  }
+  // Sempre que for True o parametro status, o botão de entendi atualiza todos os inscritos
+  // Se for false apenas fecha o modal
+  async alerta(message, status){
 
+    this.loading.style.display = 'none';
+      let  alert = await this.alertController.create({
+          header: status==true?'Tudo Sincronizado!':'Informativo!',
+          message: message,
+          buttons: [
+            {
+              text: 'Entendi',
+              handler: async () => {
+                if ( status == false){
+                  return false;
+                }
+                await this._loginPage.getTodosInscritos();
+              }
+            }
+          ],
+      });
+    await alert.present();
+  }
 }

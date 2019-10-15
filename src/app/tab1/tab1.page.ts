@@ -23,6 +23,7 @@ export class Tab1Page {
   private perPage                       = 0;
   private totalData                     = 0;
   private totalPage                     = 0;
+
   inscrito: InscritoModel[]             = [];
 
   constructor(
@@ -31,18 +32,16 @@ export class Tab1Page {
   ) { }
 
   async ngOnInit() {
-
     await this.listaInscritos();
-    // Limpa storage 
-    // this.storage.set('inscritosConfirmados',[]);
   }
 
   public listaInscritos() {
     this.storage.get('todosInscritos').then( ( result: any ) => {
-      // console.log('RESULT '+result)
+
       this.inscritos = result;
 
       for (let i = 0; i <= 50; i++) {
+
         let inscto = new InscritoModel(
           this.inscritos[i].nome,
         );
@@ -52,14 +51,14 @@ export class Tab1Page {
       this.perPage    = 10;
       this.totalData  = this.inscritos.length;
       this.totalPage  = 10;
-      // this.checarEnviados( this.inscritos );
+
     });
     return true;
   }
 
-  doInfinite(infinityScrolling) {
+  doInfinite( infinityScrolling ) {
     this.totalPage = this.page * 10;
-    
+
     setTimeout(() => {
 
       let result = this.inscritos.slice(this.page * 10);
@@ -82,12 +81,11 @@ export class Tab1Page {
     let searchInscritos = this.inscritos.filter(item => item.nom_pessoa.toLowerCase().indexOf(searchbar.toLowerCase()) > -1 )
 
     if ( searchInscritos.length > 0 ){
-      this.inscritos = searchInscritos;
+
+      this.inscritos          = searchInscritos;
       let alertaNaoEncontrado = document.querySelectorAll('.badgeNaoEncontrado');
 
-      alertaNaoEncontrado.forEach((item) => {
-        item['style'].display = 'none';
-      });
+      alertaNaoEncontrado.forEach((item) => { item['style'].display = 'none' });
 
     } else {
       const campo_mensagem = document.createElement('ion-card');   // Create a <button> element
@@ -98,7 +96,7 @@ export class Tab1Page {
       document.body.appendChild(campo_mensagem);
     }
 
-    if (searchbar === '') this.listaInscritos();
+    if ( searchbar === '' ) this.listaInscritos();
   }
 
   checkInscrito( inscrito_id: any, i: any ) {
@@ -110,13 +108,13 @@ export class Tab1Page {
     var id  = inscrito_id;
     this.storage.get('todosInscritos').then( async ( result: any ) => {
 
-      // console.log(result);
       let inscrito = result.find( item => item.id_inscricao == id );
 
       if ( inscrito ) {
 
         const alert = await this.alertController.create({
-          message: '<h1 style="text-align:center;margin-bottom:-10px">'+inscrito.nom_pessoa+'</h1>',
+          header : inscrito.nom_pessoa,
+          message: `${inscrito.nom_setor}`,
           inputs: [
             {
               label: 'INSCRIÇÃO:',
@@ -128,12 +126,6 @@ export class Tab1Page {
               label: 'CPF:',
               type: 'text',
               value: `CPF : ${inscrito.cpf}`,
-              disabled: true
-            },
-            // input date with min & max
-            {
-              name: 'lote',
-              value: `LOTE : ${inscrito.nom_setor}`,
               disabled: true
             },
             {
@@ -165,11 +157,11 @@ export class Tab1Page {
           ],
           buttons: [
             {
-              text: 'Cancel',
+              text: 'Sair',
               role: 'cancel',
-              cssClass: 'secondary',
+              cssClass: 'danger',
               handler: () => {
-                console.log('Cancel');
+                // console.log('Cancel');
                 return false;
               }
             }, {
@@ -182,16 +174,14 @@ export class Tab1Page {
                 this.storage.get('todosInscritos').then( ( result:any ) => {
 
                   if ( result ) {
-                    // Separa o inscrito dos demais
 
+                    // Separa o inscrito dos demais
                     var inscrito_checado = result.filter( ( inscrito ) => {
                       console.log(inscrito.id_inscricao);
                       return inscrito.id_inscricao === id;
                     });
 
                     this.storage.get('inscritosConfirmados').then( async ( result ) => {
-
-                      // console.log('tab1 nscritosConfirmados');
 
                       if ( result == null ) return await this.storage.set('inscritosConfirmados', [ inscrito_checado[0] ]);
 
@@ -216,30 +206,7 @@ export class Tab1Page {
           }
         };
         alert(JSON.stringify(response));
-        // console.log(response);
       }
     });
   }
-
-  // checarEnviados( inscritos ) {
-  //   this.storage.get('inscritosConfirmados').then( async ( result ) => {
-
-  //     // console.log(inscritos)
-  //     var array_inscritos = [];
-  //     [inscritos].forEach( ( item ) => {
-  //     // Esse metodo filtra os duplicados
-  //     // Deixando somente os que ainda não estão 
-  //       var duplicated = result.findIndex( redItem => {
-  //         return item.id_inscricao == redItem.id_inscricao;
-  //       }) > -1;
-
-  //       if ( !duplicated ) {
-  //         array_inscritos.push( item );
-  //       }
-  //     });
-
-  //     // console.log(array_inscritos);
-  //     return this.inscritos = array_inscritos;
-  //   });
-  // }
 }

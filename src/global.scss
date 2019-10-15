@@ -37,7 +37,33 @@
 
 .alert-wrapper.sc-ion-alert-md{
     transform: scale(1.3,1.1) !important;
+    
 }
 .alert-wrapper.sc-ion-alert-ios{
-    transform: scale(1.6) !important;
+    transform: scale(1.5) !important;
+    
+}
+
+.alert-button.ion-focusable.ion-activatable.danger {
+    font-size: 10pt !important;
+    width: 30%;
+    padding: 0px 9%;
+    margin: 0px 17% 0px 0px;
+}
+
+.alert-button.sc-ion-alert-md {
+    background-color: #0e9ca0 !important;
+    color: white !important;
+    font-weight: bold !important;
+    text-shadow: 1px 0px 2px black !important;
+}
+
+.alert-head.sc-ion-alert-md + .alert-message.sc-ion-alert-md {
+    margin: 0% -11px -33px !important;
+    text-align: center;
+}
+.alert-head.sc-ion-alert-md{
+    text-align: -webkit-center !important;
+    background-color: #0bb8cc;
+    margin: 5%;
 }
