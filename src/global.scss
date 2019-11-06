@@ -25,7 +25,6 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-
 .badgeNaoEncontrado {
     height: 238px  !important;
     background-color: azure !important;
@@ -34,7 +33,6 @@
     padding:  79px 0px !important;
     margin: 56% auto !important;
 }
-
 .alert-wrapper.sc-ion-alert-md{
     transform: scale(1.3,1.1) !important;
     
@@ -43,21 +41,18 @@
     transform: scale(1.5) !important;
     
 }
-
 .alert-button.ion-focusable.ion-activatable.danger {
     font-size: 10pt !important;
     width: 30%;
     padding: 0px 9%;
     margin: 0px 17% 0px 0px;
 }
-
 .alert-button.sc-ion-alert-md {
     background-color: #0e9ca0 !important;
     color: white !important;
     font-weight: bold !important;
     text-shadow: 1px 0px 2px black !important;
 }
-
 .alert-head.sc-ion-alert-md + .alert-message.sc-ion-alert-md {
     margin: 0% -11px -33px !important;
     text-align: center;
@@ -67,3 +62,9 @@
     background-color: #0bb8cc;
     margin: 5%;
 }
+// .alert-button.ion-focusable.ion-activatable.danger {
+//     // margin: 0px 0px 0px 0px !important;
+// }
+// .alert-button.sc-ion-alert-md{
+//     // margin-top: 6vw !important;
+// }

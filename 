@@ -1,0 +1,29 @@
+[33mcommit d91f5e6cb33055a3dc9e986bdb61983f57878a81[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: WilliamsSantos <contato.williams.santos@gmail.com>
+Date:   Tue Oct 15 17:56:28 2019 -0300
+
+    Mais ajustes simples
+
+[33mcommit ad4f816394fbb67fb13ae00727248eaeb6349c33[m
+Author: WilliamsSantos <contato.williams.santos@gmail.com>
+Date:   Mon Oct 14 17:54:47 2019 -0300
+
+    Infinity scrooling adicionado
+
+[33mcommit f86a4a12286af22bd6dc2574bf5d9d3d0ad8746c[m
+Author: WilliamsSantos <contato.williams.santos@gmail.com>
+Date:   Mon Oct 14 16:25:06 2019 -0300
+
+    Otimização melhorada
+
+[33mcommit a44d0f2f22bf2362645f8f9d4e9ea082f495a902[m
+Author: WilliamsSantos <contato.williams.santos@gmail.com>
+Date:   Mon Oct 14 14:41:40 2019 -0300
+
+    adicionado imagem de preload
+
+[33mcommit 3eb40df0ef02eb0c8657e9f9b24c070107652c50[m
+Author: WilliamsSantos <contato.williams.santos@gmail.com>
+Date:   Mon Oct 14 13:35:45 2019 -0300
+
+    Funcionalidade de login e envio de inscritos concluida

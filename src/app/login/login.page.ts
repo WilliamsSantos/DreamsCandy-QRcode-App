@@ -33,7 +33,8 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.storage.get('acess_token'))
+    // Limpa o token
+    this.storage.set('acess_token', '');
   }
 
   // Esse methodo irá checar no localStorage se o usuario existe
@@ -48,8 +49,8 @@ export class LoginPage implements OnInit {
     this.autenticando.present();
 
     const loginData = {
-      'login'   : form.value.login, 
-      'password': form.value.password
+      'login'     : form.value.login, 
+      'password'  : form.value.password
     }
 
     const httpOptions = {
@@ -83,7 +84,7 @@ export class LoginPage implements OnInit {
                 // this.getTodosInscritos();
             };
           } else {
-          // console.log(auth);
+
           this.autenticando.style.display = 'none';
           var response = {
             "status"  : 404,
@@ -105,7 +106,6 @@ export class LoginPage implements OnInit {
     //Aqui caso o usuario esteja cadastrado ele atualiza o storage dos inscritos
     this.http.get(`${this.url}`).subscribe( async ( result: any ) => {
 
-      
       if ( result ) {
 
         this.todos_inscritos = result['data'];

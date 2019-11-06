@@ -145,13 +145,13 @@ export class Tab1Page {
             {
               name: 'data-lote-inicio',
               type: 'text',
-              value: `INICIO : ${inscrito.dth_inicio}`,
+              value: `INICIO : ${inscrito.dth_inicio.split(' ')[0].split('-').reverse().join('-')}`,
               disabled: true
             },
             {
               name: 'data-lote-vencimento',
               type: 'text',
-              value: `VENCIMENTO : ${inscrito.dth_fim}`,
+              value: `VENCIMENTO : ${inscrito.dth_fim.split(' ')[0].split(' ')[0].split('-').reverse().join('-')}`,
               disabled: true
             }
           ],
@@ -196,6 +196,16 @@ export class Tab1Page {
         });
         await alert.present();
 
+        //  Disabilita botão para confirmação caso o status seja A = cancelado 
+        if ( inscrito.ind_status == 'A') {
+          if ( document.querySelectorAll('.alert-button.ion-focusable.ion-activatable.sc-ion-alert-md').length > 0 ){
+            let btn_confirmar = document.querySelectorAll('.alert-button.ion-focusable.ion-activatable.sc-ion-alert-md');  
+                btn_confirmar[1]['style']['display'] = 'none';
+          }else if ( document.querySelectorAll('.alert-button.ion-focusable.ion-activatable.sc-ion-alert-ios').length > 0 ){
+            let btn_confirmar = document.querySelectorAll('.alert-button.ion-focusable.ion-activatable.sc-ion-alert-ios');  
+                btn_confirmar[1]['style']['display'] = 'none';
+          }
+        }
       } else {
 
         let response = {
