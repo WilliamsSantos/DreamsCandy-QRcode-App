@@ -161,7 +161,6 @@ export class Tab1Page {
               role: 'cancel',
               cssClass: 'danger',
               handler: () => {
-                // console.log('Cancel');
                 return false;
               }
             }, {
@@ -177,7 +176,6 @@ export class Tab1Page {
 
                     // Separa o inscrito dos demais
                     var inscrito_checado = result.filter( ( inscrito ) => {
-                      console.log(inscrito.id_inscricao);
                       return inscrito.id_inscricao === id;
                     });
 
@@ -197,11 +195,11 @@ export class Tab1Page {
         await alert.present();
 
         //  Disabilita botão para confirmação caso o status seja A = cancelado 
-        if ( inscrito.ind_status == 'A') {
+        if ( inscrito.ind_status == 'A' || inscrito.ind_status == 'P' ) {
           if ( document.querySelectorAll('.alert-button.ion-focusable.ion-activatable.sc-ion-alert-md').length > 0 ){
             let btn_confirmar = document.querySelectorAll('.alert-button.ion-focusable.ion-activatable.sc-ion-alert-md');  
                 btn_confirmar[1]['style']['display'] = 'none';
-          }else if ( document.querySelectorAll('.alert-button.ion-focusable.ion-activatable.sc-ion-alert-ios').length > 0 ){
+          } else if ( document.querySelectorAll('.alert-button.ion-focusable.ion-activatable.sc-ion-alert-ios').length > 0 ){
             let btn_confirmar = document.querySelectorAll('.alert-button.ion-focusable.ion-activatable.sc-ion-alert-ios');  
                 btn_confirmar[1]['style']['display'] = 'none';
           }

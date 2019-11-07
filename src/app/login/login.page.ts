@@ -64,9 +64,7 @@ export class LoginPage implements OnInit {
 
     this.http.post(`${this.url_login}`, JSON.stringify(loginData), httpOptions ).subscribe(
       async (auth) => {
-
         if ( auth['cod'] == 200 && auth['status'] == 'sucess' ){
-          // console.log(auth)
           this.autenticando.style.display = 'none';
           this.sincronizando = await this.loadingController.create({
             message     : 'Sincronizando...',
@@ -92,7 +90,6 @@ export class LoginPage implements OnInit {
             "data"    : {"describe": new Error()}
           } 
 
-          // console.log(response);
           this.alerta( response.message);
         }
       },

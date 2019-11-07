@@ -61,11 +61,6 @@ export class TabsPage implements OnInit {
     await this.submeterDados('Guardando');
   }
 
-  verificaUsuario(){
-    this.storage.get('inscritos').then( ( res ) => {
-    });
-  }
-
   async submeterDados( mensagem: string ){
 
     const httpOptions = {
@@ -81,19 +76,18 @@ export class TabsPage implements OnInit {
       for ( let i = 0; i <= todosConfirmados.length; i++) {
 
         let inscrito = {
-          'idInscricao': todosConfirmados[i]['id_inscricao']
+          'idInscricao' : todosConfirmados[i].id_inscricao
         } 
 
         this.http.post(`${this.url_insert_inscritos}`, JSON.stringify(inscrito), httpOptions ).subscribe(async (res) => {
-          // console.log('dentro ',i)
           if ( res['cod'] == 200 && res['status'] == 'sucess'){
             let novoArrayInscritos = todosConfirmados.splice(todosConfirmados[i], 0);
             await this.storage.set('inscritosConfirmados', novoArrayInscritos);
           }
         });
       }
-      // console.log(this.storage.get('inscritosConfirmados'));
     });
+
     this.alerta('Seus Dados Já Estão Atualizados.', true);
   }
 
@@ -162,7 +156,6 @@ export class TabsPage implements OnInit {
       });
 
       this.alerta('Inscrito Confirmado.', true);
-      // alert('dados: ');
     }).catch( ( err ) => {
       console.log('Error', err);
     });
