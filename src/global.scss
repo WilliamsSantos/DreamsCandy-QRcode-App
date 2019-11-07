@@ -33,17 +33,16 @@
     padding:  79px 0px !important;
     margin: 56% auto !important;
 }
-.alert-wrapper.sc-ion-alert-md{
-    transform: scale(1.3,1.1) !important;
-    
+.alert-wrapper.sc-ion-alert-md {
+    transform: scale(1.3, 1.2) !important;
 }
-.alert-wrapper.sc-ion-alert-ios{
+.alert-wrapper.sc-ion-alert-ios {
     transform: scale(1.5) !important;
-    
 }
 .alert-button.ion-focusable.ion-activatable.danger {
     font-size: 10pt !important;
     width: 30%;
+    height: 11vw;
     padding: 0px 9%;
     margin: 0px 17% 0px 0px;
 }
@@ -57,17 +56,17 @@
     margin: 0% -11px -33px !important;
     text-align: center;
 }
-.alert-head.sc-ion-alert-md{
+.alert-head.sc-ion-alert-md {
     text-align: -webkit-center !important;
     background-color: #0bb8cc;
     margin: 5%;
 }
-.alert-button.ion-focusable.ion-activatable.sc-ion-alert-md{
+.alert-button.ion-focusable.ion-activatable.sc-ion-alert-md {
     margin: 0px 6vw 0px 5vw !important;
 }
-.alert-button.ion-focusable.ion-activatable.sc-ion-alert-ios{
+.alert-button.ion-focusable.ion-activatable.sc-ion-alert-ios {
     margin: 0px 0px 0px 0px !important;
 }
-// .alert-button.sc-ion-alert-md{
-//     // margin-top: 6vw !important;
-// }
+.alert-button-group.sc-ion-alert-md {
+    padding-top: 20px !important;
+}

@@ -138,14 +138,14 @@ export class Tab1Page {
             {
               name: 'periodo',
               type: 'text',
-              value: 'PERIODO LOTE:',
+              value: 'PERÍODO LOTE:',
               disabled: true
             },
             // input date without min nor max
             {
               name: 'data-lote-inicio',
               type: 'text',
-              value: `INICIO : ${inscrito.dth_inicio.split(' ')[0].split('-').reverse().join('-')}`,
+              value: `INÍCIO : ${inscrito.dth_inicio.split(' ')[0].split('-').reverse().join('-')}`,
               disabled: true
             },
             {

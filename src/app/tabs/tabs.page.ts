@@ -36,8 +36,9 @@ export class TabsPage implements OnInit {
   ) {}
 
   async ngOnInit(){
-    if (await this.storage.get('acess_token') == ""){
-      this.goHome()
+    console.log(this.storage.get('acess_token'));
+    if (await this.storage.get('acess_token') == "" || await this.storage.get('todosInscritos') == "" ){
+      return this.goHome();
     };
   }
 
@@ -108,6 +109,7 @@ export class TabsPage implements OnInit {
       let base64        = barcodeData;
       let dadosInscrito = atob(base64.text);
       this.scanner_data = dadosInscrito.split('|');
+
       let dadosScanner  = {
         'cpf'             : JSON.stringify( this.scanner_data[0] ),
         'idInscricao'     : JSON.stringify( this.scanner_data[1] ),
@@ -122,10 +124,10 @@ export class TabsPage implements OnInit {
           cssClass: 'custom-class custom-loading'
         });
         await this.loading.present();
-        
+
         let inscritoConfirmado = await inscritos.find( inscrito => inscrito.id_inscricao == dadosScanner.idInscricao);
 
-        if ( inscritoConfirmado == null){
+        if ( inscritoConfirmado == null ){
           this.alerta('Inscrito não Encontrado na lista.', false);
           return false;
         }
@@ -174,7 +176,7 @@ export class TabsPage implements OnInit {
 
   // Sempre que for True o parametro status, o botão de entendi atualiza todos os inscritos
   // Se for false apenas fecha o modal
-  async alerta(message, status){
+  async alerta( message, status ){
 
     this.loading.style.display = 'none';
       let  alert = await this.alertController.create({

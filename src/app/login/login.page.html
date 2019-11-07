@@ -1,27 +1,11 @@
-
 <style>
-
-  img[_ngcontent-dnc-c1] {
-    max-width: 71vh;
-    border: 0;
-    margin: 3% -57px -4%;
-    text-align: center;
-  }
-  img {
-      max-width: 115%;
-      border: 0;
-      margin: 3% -4%;
-  }
-  .input-font{
-      font-size: x-large !important;
-      text-align: center !important;
-  }
-
+  img[_ngcontent-dnc-c1] {max-width: 71vh;border: 0;margin: 3% -57px -4%;text-align: center;}
+  img {max-width: 115%;border: 0;margin: 3% -4%;}
+  .input-font{font-size: x-large !important;text-align: center !important;}
 </style>
 
 <ion-content id="form-content" justify-content-center>
   <img src="assets/logo-dreams-candy.jpeg" style="margin: -4% auto -17px 4%; width:100%">
-  <!-- <img src="https://lh3.googleusercontent.com/-jkVFmOELCqU/XVR2Utf5aMI/AAAAAAAAAGY/1L8FKAMNif48d5ugd1ldulX5IXZkRCrGgCK8BGAs/s0/2019-08-14.jpg" alt="" srcset=""> -->
   <form  id="login-form" #form="ngForm" (ngSubmit)="authenticate(form)" method="post">
     <ion-grid>
       <ion-row color="primary" justify-content-center>
