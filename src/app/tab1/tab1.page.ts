@@ -78,14 +78,18 @@ export class Tab1Page {
   public busca() {
 
     let searchbar       = document.querySelector('ion-searchbar').value;
-    let searchInscritos = this.inscritos.filter(item => item.nom_pessoa.toLowerCase().indexOf(searchbar.toLowerCase()) > -1 )
+    let searchInscritos = this.inscritos.filter(item => item.nom_pessoa.toLowerCase().indexOf(searchbar.toLowerCase()) > -1 );
 
-    if ( searchInscritos.length > 0 ){
+    if ( searchInscritos.length > 0 ) {
 
+      this.inscritos          = [];
       this.inscritos          = searchInscritos;
+
       let alertaNaoEncontrado = document.querySelectorAll('.badgeNaoEncontrado');
 
-      alertaNaoEncontrado.forEach((item) => { item['style'].display = 'none' });
+      alertaNaoEncontrado.forEach((item) => { 
+        item['style'].display = 'none'; 
+      });
 
     } else {
       const campo_mensagem = document.createElement('ion-card');   // Create a <button> element
