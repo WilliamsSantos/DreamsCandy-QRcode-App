@@ -1,8 +1,8 @@
 {
   "name": "DreamsCandyQrcode",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Ofm Systems",
+  "homepage": "http://www.ofm.com.br/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -67,7 +67,7 @@
     "tslint": "~5.15.0",
     "typescript": "~3.4.3"
   },
-  "description": "An Ionic project",
+  "description": "App de check-in para confirmação de presença dos inscritos cadastrados em algum evento da Dreams Candy.",
   "cordova": {
     "plugins": {
       "cordova-sqlite-storage": {},
