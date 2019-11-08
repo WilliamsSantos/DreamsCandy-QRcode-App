@@ -34,17 +34,14 @@
     margin: 56% auto !important;
 }
 .alert-wrapper.sc-ion-alert-md {
-    transform: scale(1.3, 1.2) !important;
+    transform: scale(1.2, 1.1) !important;
 }
 .alert-wrapper.sc-ion-alert-ios {
     transform: scale(1.5) !important;
 }
 .alert-button.ion-focusable.ion-activatable.danger {
-    font-size: 10pt !important;
-    width: 30%;
-    height: 11vw;
-    padding: 0px 9%;
-    margin: 0px 17% 0px 0px;
+    padding: 10px 9% !important;
+    width: 30% !important;
 }
 .alert-button.sc-ion-alert-md {
     background-color: #0e9ca0 !important;
@@ -53,7 +50,7 @@
     text-shadow: 1px 0px 2px black !important;
 }
 .alert-head.sc-ion-alert-md + .alert-message.sc-ion-alert-md {
-    margin: 0% -11px -33px !important;
+    margin: 4% -11px 0% 0% !important;
     text-align: center;
 }
 .alert-head.sc-ion-alert-md {
@@ -62,11 +59,14 @@
     margin: 5%;
 }
 .alert-button.ion-focusable.ion-activatable.sc-ion-alert-md {
-    margin: 0px 6vw 0px 5vw !important;
+    margin: auto !important;
 }
 .alert-button.ion-focusable.ion-activatable.sc-ion-alert-ios {
     margin: 0px 0px 0px 0px !important;
 }
 .alert-button-group.sc-ion-alert-md {
     padding-top: 20px !important;
+}
+.alert-sub-title.sc-ion-alert-md, .alert-title.sc-ion-alert-md{
+    color:white !important;
 }

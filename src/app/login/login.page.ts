@@ -77,16 +77,13 @@ export class LoginPage implements OnInit {
             // Cria sessao usuario
             if ( await this.storage.set('acess_token', auth['data']['usuarioToken']) ){
               this.getTodosInscritos();
-              // Chamo a função que dá Get nos inscritos
-                // if ( await this.getTodosInscritos()) window.location.href='/tabs/tab1';
-                // this.getTodosInscritos();
             };
-          } else {
+        } else {
 
           this.autenticando.style.display = 'none';
           var response = {
             "status"  : 404,
-            "message" : 'Usuario nao encontrado na base de dados',
+            "message" : 'Usuário não encontrado na base de dados!',
             "data"    : {"describe": new Error()}
           } 
 
