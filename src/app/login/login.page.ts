@@ -35,11 +35,16 @@ export class LoginPage implements OnInit {
   ngOnInit() {
     // Limpa o token
     this.storage.set('acess_token', '');
+    if (!this.storage.get('acess_app') || this.storage.get('acess_app')[0] != 1 ) {
+      this.bemVindo();
+    }
   }
 
   // Esse methodo irá checar no localStorage se o usuario existe
   async authenticate(form: NgForm){
 
+    //Adiciona o valor 1 constatando que a pessoa ja teve seu primeiro acesso
+    this.storage.set('acess_app', 1);
     this.autenticando = await this.loadingController.create({
       message: 'Conectando...',
       spinner:'dots',
@@ -64,6 +69,7 @@ export class LoginPage implements OnInit {
 
     this.http.post(`${this.url_login}`, JSON.stringify(loginData), httpOptions ).subscribe(
       async (auth) => {
+
         if ( auth['cod'] == 200 && auth['status'] == 'sucess' ){
           this.autenticando.style.display = 'none';
           this.sincronizando = await this.loadingController.create({
@@ -91,6 +97,8 @@ export class LoginPage implements OnInit {
         }
       },
       err => {
+        this.autenticando.style.display = 'none';
+        this.alerta('Não conseguimos nos conectar.\nCertifique-se de que está com o Wifi ou dados móveis ligado e tente novamente, caso continue aparecendo esta mensagem entre em contato com o nosso suporte.');
         console.log(err);
       }
     );
@@ -125,6 +133,16 @@ export class LoginPage implements OnInit {
     return true;
   }
 
+  async bemVindo(  ){
+    const alert = await this.alertController.create({
+      header: 'BEM VINDO!!!',
+      message: 'Para o primeiro acesso ao aplicativo Dreams Candy é necessário conexão com a internet. Antes de entrar verifique se está com wifi ou os dados móveis ligados!',
+      buttons: ['Entendi.']
+    });
+
+    await alert.present();
+  }
+
   // Utils
   async alerta( mensagem ){
 
@@ -136,4 +154,5 @@ export class LoginPage implements OnInit {
 
     await alert.present();
   }
+
 }

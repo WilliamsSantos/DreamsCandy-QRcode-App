@@ -47,8 +47,9 @@ export class AppModule {
   private static _post_url_desenvolvimento: string  = 'http://10.1.1.138:8000/api/setInscritosConfirmados';
   private static _post_url_login: string            = 'http://10.1.1.138:8000/api/login';
 
-  private static _get_url_producao: string          = 'http://api.ofm.com.br/DreamsCandy/public/api/getDadosInscritos';
-  private static _post_url_producao: string         = 'http://api.ofm.com.br/DreamsCandy/public/api/setInscritosConfirmados';
+  private static _get_url_producao: string          = 'https://www.dreamscandy.com.br/api/getDadosInscritos';
+  private static _post_url_producao: string         = 'https://www.dreamscandy.com.br/api/setInscritosConfirmados';
+  private static _post_url_producao_login: string   = 'https://www.dreamscandy.com.br/api/login';
 
   private static _sincronizando: any;
 
@@ -73,6 +74,10 @@ export class AppModule {
   /*  
   *   @Url Produção
   */
+    static postLoginProducao():String {
+      return this._post_url_producao_login;
+    }
+
     static getInscritosProducao():String {
       return this._get_url_producao;
     }
