@@ -1,2 +1,2 @@
 # DreamsCandy-QRcode-App
-Aplicativo de Credenciamento de Eventos, desenvolvido para Ofm - Sistem
+Aplicativo de Credenciamento de Eventos, desenvolvido para Ofm - Systems
